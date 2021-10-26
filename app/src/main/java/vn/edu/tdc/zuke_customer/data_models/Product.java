@@ -3,7 +3,7 @@ package vn.edu.tdc.zuke_customer.data_models;
 public class Product {
     //properties
     private String key;
-    private int id;
+    private String id;
     private String name;
     private String category_id;
     private String image;
@@ -32,11 +32,11 @@ public class Product {
     private int sold;
     private String  created_at;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -112,7 +112,7 @@ public class Product {
         this.key = key;
     }
 
-    public Product(String key, int id, String name, String category_id, String image, String manu_id, int quantity, String description, int import_price, int price, int sold, String created_at) {
+    public Product( String id, String name, String category_id, String image, String manu_id, int quantity, String description, int import_price, int price, int sold, String created_at) {
         this.id = id;
         this.name = name;
         this.category_id = category_id;
@@ -124,7 +124,6 @@ public class Product {
         this.price = price;
         this.sold = sold;
         this.created_at = created_at;
-        this.key = key;
     }
 
     public Product(String name, int price) {

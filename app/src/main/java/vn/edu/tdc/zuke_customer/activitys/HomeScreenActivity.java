@@ -1,6 +1,7 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -33,6 +36,7 @@ public class HomeScreenActivity extends AppCompatActivity {
     ProductAdapter productAdapter;
     // creating object of ViewPager
     ViewPager mViewPager;
+    FirebaseAuth mAuth;
 
     // images array
     int[] images1 = {R.drawable.a1, R.drawable.a2, R.drawable.a3};
@@ -44,6 +48,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
+        mAuth = FirebaseAuth.getInstance();
+
         listCate = new ArrayList<>();
         listProduct = new ArrayList<>();
         categoryAdapter = new CategoryAdapter(this, listCate);

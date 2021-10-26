@@ -9,6 +9,7 @@
         style="@style/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:text="Tổng tiền: 40,000,000 VND"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

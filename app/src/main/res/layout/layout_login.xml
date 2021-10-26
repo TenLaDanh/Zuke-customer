@@ -65,24 +65,25 @@
             style="@style/viewParent"
             android:layout_gravity="end"
             android:layout_marginTop="10dp"
+            android:onClick="onForgotPass"
             android:text="@string/forgot_password_text"
             android:textColor="@color/primaryTextColor"
-            android:textSize="@dimen/newsMoreTextSize"
-            android:onClick="onForgotPass" />
+            android:textSize="@dimen/newsMoreTextSize" />
 
         <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
             android:id="@+id/cirLoginButton"
             style="@style/loginButton"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/loginViewsMargin"
+            android:onClick="onSubmit"
             android:text="@string/login"
             app:initialCornerAngle="27dp"
             app:spinning_bar_color="#FFF"
             app:spinning_bar_padding="6dp"
-            app:spinning_bar_width="4dp"
-            android:onClick="onSubmit"/>
+            app:spinning_bar_width="4dp" />
 
         <TextView
+            android:id="@+id/txtRegis"
             style="@style/parent"
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:onClick="onRegister"
@@ -130,8 +131,10 @@
             android:gravity="center">
 
             <ImageView
+                android:id="@+id/btnFB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:src="@drawable/ic_facebook" />
         </LinearLayout>
 

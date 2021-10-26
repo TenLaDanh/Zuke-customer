@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="vn.edu.tdc.zuke_customer">
 
     <!-- permission -->
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
         android:allowBackup="true"
         android:icon="@drawable/app"
@@ -12,29 +13,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.DarkActionBar"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
 
         <!-- activitys -->
         <activity
             android:name=".activitys.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
+
+        </activity>
+        <activity
+            android:name=".activitys.FacebookAuthActivity"
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar">
+
         </activity>
         <activity
             android:name=".activitys.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
         <activity
             android:name=".activitys.ForgotPasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
         <activity
             android:name=".activitys.OTPVerificationActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
         <activity
             android:name=".activitys.ForgotPasswordChangeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
         <activity
             android:name=".activitys.HomeScreenActivity"
             android:theme="@style/AppTheme.DarkActionBar">
@@ -62,6 +66,10 @@
         <activity
             android:name=".activitys.CartActivity"
             android:theme="@style/AppTheme.DarkActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activitys.PaymentActivity"
@@ -99,6 +107,17 @@
             android:name=".activitys.CategoryActivity"
             android:theme="@style/AppTheme.DarkActionBar">
         </activity>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity" android:configChanges= "keyboard|keyboardHidden|screenLayout|screenSize|orientation" android:label="@string/app_name" />
+        <activity android:name="com.facebook.CustomTabActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

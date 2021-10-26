@@ -15,7 +15,7 @@
 
     <!--normal colors-->
     <color name="darkTextColor">#020000</color>
-
+    <color name="bg_row_background">#fa315b</color>
 
     <!--colors for light mode-->
     <color name="contentTextColor">#020000</color>

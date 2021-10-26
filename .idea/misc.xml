@@ -60,10 +60,16 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_register.xml" value="0.18425925925925926" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_search.xml" value="0.2" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_support.xml" value="0.20416666666666666" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_indecrease_button.xml" value="0.2" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_cart.xml" value="0.22" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_goiy.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_facebook_auth.xml" value="0.20416666666666666" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_list_cart.xml" value="0.18" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_login.xml" value="0.20416666666666666" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

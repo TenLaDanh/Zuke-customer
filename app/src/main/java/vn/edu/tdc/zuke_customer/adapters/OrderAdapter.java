@@ -28,7 +28,6 @@ import vn.edu.tdc.zuke_customer.data_models.Order;
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> implements Filterable {
     ArrayList<Order> listOrder, list, listOrderFilter;
     private Context context;
-    String userID = "";
     OrderAdapter.ItemClickListener itemClickListener;
     DatabaseReference status = FirebaseDatabase.getInstance().getReference("Status");
 
@@ -36,11 +35,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         this.itemClickListener = itemClickListener;
     }
 
-    public OrderAdapter(ArrayList<Order> listOrder, Context context, String userID) {
+    public OrderAdapter(ArrayList<Order> listOrder, Context context) {
         this.listOrder = listOrder;
         this.context = context;
         this.list = listOrder;
-        this.userID = userID;
     }
 
     @NonNull
@@ -77,16 +75,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         if(item.getStatus() == 6 || item.getStatus() == 8) {
             holder.view.setVisibility(View.VISIBLE);
             holder.bt_rating.setVisibility(View.VISIBLE);
-            holder.onClickListener = v -> {
-                if (itemClickListener != null) {
-                    if(v == holder.bt_rating) {
-                        itemClickListener.getRating(item.getOrderID());
-                    } else itemClickListener.getInfor(item);
-                } else {
-                    return;
-                }
-            };
         }
+        holder.onClickListener = v -> {
+            if (itemClickListener != null) {
+                if(v == holder.bt_rating) {
+                    itemClickListener.getRating(item.getOrderID(), v);
+                } else itemClickListener.getInfor(item);
+            } else {
+                return;
+            }
+        };
     }
 
     private String formatPrice(int price) {
@@ -144,6 +142,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             tv_ngatdat = itemView.findViewById(R.id.txt_date);
             bt_rating = itemView.findViewById(R.id.btn_rating);
             bt_rating.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -156,6 +155,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     public interface ItemClickListener {
         void getInfor(Order item);
-        void getRating(String key);
+        void getRating(String key, View v);
     }
 }

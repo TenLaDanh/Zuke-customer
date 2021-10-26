@@ -75,17 +75,17 @@ public class HomeScreenActivity extends AppCompatActivity {
     }
 
     public void data() {
-        listCate.add(new Catelogy("1", "Điện thoại", "a"));
-        listCate.add(new Catelogy("1", "Máy tính bảng", "a"));
-        listCate.add(new Catelogy("1", "Laptop", "a"));
-        listCate.add(new Catelogy("1", "Màn hình", "a"));
-        listCate.add(new Catelogy("1", "Tivi", "a"));
-
-        listProduct.add(new Product("Product 1", 20000000));
-        listProduct.add(new Product("Product 2", 20000000));
-        listProduct.add(new Product("Product 3", 20000000));
-        listProduct.add(new Product("Product 4", 20000000));
-        listProduct.add(new Product("Product 5", 20000000));
-        listProduct.add(new Product("Product 6", 20000000));
+//        listCate.add(new Catelogy("1", "Điện thoại", "a"));
+//        listCate.add(new Catelogy("1", "Máy tính bảng", "a"));
+//        listCate.add(new Catelogy("1", "Laptop", "a"));
+//        listCate.add(new Catelogy("1", "Màn hình", "a"));
+//        listCate.add(new Catelogy("1", "Tivi", "a"));
+//
+//        listProduct.add(new Product("Product 1", 20000000));
+//        listProduct.add(new Product("Product 2", 20000000));
+//        listProduct.add(new Product("Product 3", 20000000));
+//        listProduct.add(new Product("Product 4", 20000000));
+//        listProduct.add(new Product("Product 5", 20000000));
+//        listProduct.add(new Product("Product 6", 20000000));
     }
 }

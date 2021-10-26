@@ -33,24 +33,12 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/txt_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_name"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/img"
-            android:text="Title"
-            android:textSize="16sp"
-            android:textStyle="italic" />
-
         <View
             android:id="@+id/view"
             style="@style/Divider.Vertical"
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_below="@+id/txt_price"
+            android:layout_below="@+id/img"
             android:layout_marginTop="10dp" />
 
         <RatingBar
@@ -60,21 +48,33 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/view"
             android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:rating="4.5" />
 
         <EditText
+            android:id="@+id/comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:inputType="textMultiLine"
             android:layout_below="@+id/simpleRatingBar"
-            android:lines="8"
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_search"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:lines="8"
             android:maxLines="10"
             android:minLines="6"
+            android:padding="5dp"
             android:scrollbars="vertical" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/comment"
+            android:layout_marginTop="5dp" />
 
     </RelativeLayout>
 

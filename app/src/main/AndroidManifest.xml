@@ -90,8 +90,7 @@
         </activity>
         <activity
             android:name=".activitys.DetailHistoryOrderActivity"
-            android:theme="@style/AppTheme.DarkActionBar">
-        </activity>
+            android:theme="@style/AppTheme.DarkActionBar" />
         <activity
             android:name=".activitys.RatingActivity"
             android:theme="@style/AppTheme.DarkActionBar">

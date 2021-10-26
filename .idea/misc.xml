@@ -32,7 +32,7 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_catelogy_each_item.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_indecrease_button.xml" value="0.33" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_notification.xml" value="0.25" />
-        <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_order.xml" value="0.33" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_order.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_product_cart.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_product_goiy.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/item_product_order.xml" value="0.20416666666666666" />
@@ -49,6 +49,7 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_history_order.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_home.xml" value="0.22" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_introduce.xml" value="0.20416666666666666" />
+        <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_list.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_list_cart.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_list_cart_sm.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/layout_login.xml" value="0.2" />

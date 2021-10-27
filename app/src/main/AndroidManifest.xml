@@ -4,6 +4,8 @@
     package="vn.edu.tdc.zuke_customer">
 
     <!-- permission -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
@@ -15,8 +17,15 @@
         android:theme="@style/AppTheme.DarkActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/api_key" />
 
         <!-- activitys -->
+        <activity android:name=".activitys.MapActivity"
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar">
+
+        </activity>
         <activity
             android:name=".activitys.LoginActivity"
             android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
@@ -66,15 +75,17 @@
         <activity
             android:name=".activitys.CartActivity"
             android:theme="@style/AppTheme.DarkActionBar">
+
+        </activity>
+        <activity
+            android:name=".activitys.PaymentActivity"
+            android:theme="@style/AppTheme.DarkActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activitys.PaymentActivity"
-            android:theme="@style/AppTheme.DarkActionBar">
-        </activity>
+
         <activity
             android:name=".activitys.SearchActivity"
             android:theme="@style/AppTheme">

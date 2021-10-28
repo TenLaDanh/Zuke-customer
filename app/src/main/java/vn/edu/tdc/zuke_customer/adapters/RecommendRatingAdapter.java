@@ -16,10 +16,19 @@ import vn.edu.tdc.zuke_customer.R;
 public class RecommendRatingAdapter extends RecyclerView.Adapter<RecommendRatingAdapter.ViewHolder> {
     Context context;
     ArrayList<String> items;
+    RecommendRatingAdapter.ItemClick itemClickListener;
+    String to = "";
+    public void setTo(String to) {
+        this.to = to;
+    }
 
     public RecommendRatingAdapter(Context context, ArrayList<String> items) {
         this.context = context;
         this.items = items;
+    }
+
+    public void setItemClickListener(RecommendRatingAdapter.ItemClick itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     @NonNull
@@ -32,6 +41,16 @@ public class RecommendRatingAdapter extends RecyclerView.Adapter<RecommendRating
     public void onBindViewHolder(@NonNull RecommendRatingAdapter.ViewHolder holder, int position) {
         String item = items.get(position);
         holder.txtComment.setText(item);
+        if(to.equals("read")) {
+            holder.txtComment.setEnabled(false);
+            holder.txtComment.setFocusable(false);
+        }
+        holder.itemView.setOnClickListener(v -> {
+            if (itemClickListener != null) {
+                itemClickListener.getComment(item);
+            }
+            else return;
+        });
     }
 
     @Override
@@ -46,5 +65,9 @@ public class RecommendRatingAdapter extends RecyclerView.Adapter<RecommendRating
             super(view);
             txtComment = view.findViewById(R.id.comment);
         }
+    }
+
+    public interface ItemClick {
+        void getComment(String s);
     }
 }

@@ -1,7 +1,8 @@
 package vn.edu.tdc.zuke_customer.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,6 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.Product;
@@ -38,9 +38,12 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
     RecommendRatingAdapter adapter;
     String to = "";
 
-    public OrderRatingAdapter(Context context, ArrayList<Rating> items, String to) {
+    public OrderRatingAdapter(Context context, ArrayList<Rating> items) {
         this.context = context;
         this.items = items;
+    }
+
+    public void setTo(String to) {
         this.to = to;
     }
 
@@ -75,6 +78,8 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
 
             }
         });
+        holder.ratingBar.setRating(item.getRating());
+        holder.txtComment.setText(item.getComment());
         // RecycleView:
         holder.recyclerView.setHasFixedSize(true);
         list = new ArrayList<String> ();
@@ -84,15 +89,38 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
         list.add("Sản phẩm tạm được");
         list.add("Sản phẩm kém chất lượng");
         adapter = new RecommendRatingAdapter(context, list);
-//        adapter.setItemClickListener(itemClickListener);
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        Log.d("TAG", "onBindViewHolder: " + this.to);
         if(to.equals("read")) {
-            holder.recyclerView.setEnabled(false);
             holder.ratingBar.setEnabled(false);
             holder.txtComment.setEnabled(false);
+            adapter.setTo(to);
         }
+        holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> item.setRating(rating));
+
+        adapter.itemClickListener = s -> {
+            if(holder.txtComment.getText().toString().equals("")) {
+                holder.txtComment.setText(s);
+            } else {
+                holder.txtComment.setText(String.valueOf(holder.txtComment.getText()) + ".\n" + s);
+            }
+        };
+        holder.txtComment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                item.setComment(String.valueOf(holder.txtComment.getText()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     @Override

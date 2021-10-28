@@ -7,7 +7,7 @@ public class Rating {
     private String key;
     private String comment;
     private String productID;
-    private int rating;
+    private float rating;
     private String orderID;
     private String created_at;
 
@@ -36,11 +36,11 @@ public class Rating {
         this.productID = productID;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -64,11 +64,17 @@ public class Rating {
     public Rating() {
     }
 
-    public Rating(String comment, String productID, int rating, String orderID, String created_at) {
+    public Rating(String comment, String productID, float rating, String orderID, String created_at) {
         this.comment = comment;
         this.productID = productID;
         this.rating = rating;
         this.orderID = orderID;
+        this.created_at = created_at;
+    }
+
+    public Rating(String comment, float rating, String created_at) {
+        this.comment = comment;
+        this.rating = rating;
         this.created_at = created_at;
     }
 }

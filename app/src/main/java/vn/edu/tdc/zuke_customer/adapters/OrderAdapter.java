@@ -75,6 +75,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         if(item.getStatus() == 6 || item.getStatus() == 8) {
             holder.view.setVisibility(View.VISIBLE);
             holder.bt_rating.setVisibility(View.VISIBLE);
+        } else {
+            holder.view.setVisibility(View.GONE);
+            holder.bt_rating.setVisibility(View.GONE);
         }
         holder.onClickListener = v -> {
             if (itemClickListener != null) {

@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -45,7 +42,6 @@ import vn.edu.tdc.zuke_customer.data_models.Order;
 import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 
 public class PaymentActivity extends AppCompatActivity {
-    Handler handler = new Handler();
     ImageView btnMap;
     Button btnSubmit;
     TextInputEditText edtAddress, edtName, edtPhone, edtDiscountCode, edtNote;
@@ -56,7 +52,6 @@ public class PaymentActivity extends AppCompatActivity {
     int total = 0;
     String accountID = "abc05684428156";
     FirebaseDatabase db = FirebaseDatabase.getInstance();
-    DatabaseReference proRef = db.getReference("Products");
     DatabaseReference cartRef = db.getReference("Cart");
     DatabaseReference detailRef = db.getReference("Cart_Detail");
     DatabaseReference code_cusRef = db.getReference("DiscountCode_Customer");
@@ -64,7 +59,6 @@ public class PaymentActivity extends AppCompatActivity {
     DatabaseReference discountcodeRef = db.getReference("DiscountCode");
     DatabaseReference areaRef = db.getReference("Area");
     String address = "";
-    boolean check = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,17 +80,20 @@ public class PaymentActivity extends AppCompatActivity {
         btnMap = findViewById(R.id.btnMap);
         listCart = new ArrayList<>();
         cartAdapter = new CartDetailTTAdapter(this, listCart);
+
         if (getIntent().getStringExtra("address") != null) {
             address = getIntent().getStringExtra("address");
             edtAddress.setText(address);
         }
 
-        ArrayList<ArrayList<CartDetail>> ab = new ArrayList<>();
-
+        // Gọi hàm lấy dữ liệu:
         data();
+
+        // Recyclerview hiển thị dữ liệu:
         productRecyclerView.setAdapter(cartAdapter);
         productRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Xử lý sự kiện cho focus edtDiscountCode và edtAddress:
         edtDiscountCode.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 if (String.valueOf(edtAddress.getText()).equals("")) {
@@ -229,10 +226,13 @@ public class PaymentActivity extends AppCompatActivity {
             }
         });
 
+        // Xử lý sự kiện click mở map cho btnMap:
         btnMap.setOnClickListener(v -> {
             Intent intent = new Intent(PaymentActivity.this, MapActivity.class);
             startActivity(intent);
         });
+
+        // Xử lý sự kiện xác nhận đặt hàng:
         btnSubmit.setOnClickListener(v -> {
             DatabaseReference orderRef = db.getReference("Order");
             DatabaseReference orderdetailRef = db.getReference("Order_Details");
@@ -333,9 +333,9 @@ public class PaymentActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
+    // Get data:
     private void data() {
         cartRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -382,6 +382,7 @@ public class PaymentActivity extends AppCompatActivity {
         txtRemain.setText(formatPrice(total));
     }
 
+    // Kiểm tra lỗi
     private int checkError() {
         if (String.valueOf(edtAddress.getText()).equals("")) {
             showWarningDialog("Địa chỉ không được để trống");
@@ -400,12 +401,14 @@ public class PaymentActivity extends AppCompatActivity {
         return 1;
     }
 
+    // Format tiền
     private String formatPrice(int price) {
         String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
         return s.substring(2, s.length()) + " ₫";
     }
 
+    // Chuyển tiền sang dạng int
     private int toPrice(String price) {
         price = price.substring(0, price.length() - 2).replace(".", "");
 
@@ -413,6 +416,7 @@ public class PaymentActivity extends AppCompatActivity {
         return totalPrice;
     }
 
+    // Các hàm thông báo:
     private void showSuccesDialog(String notify, Order item) {
         AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(PaymentActivity.this).inflate(

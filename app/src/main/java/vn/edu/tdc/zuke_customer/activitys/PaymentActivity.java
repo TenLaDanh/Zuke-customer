@@ -233,56 +233,85 @@ public class PaymentActivity extends AppCompatActivity {
             Intent intent = new Intent(PaymentActivity.this, MapActivity.class);
             startActivity(intent);
         });
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatabaseReference orderRef = db.getReference("Order");
-                DatabaseReference orderdetailRef = db.getReference("Order_Details");
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-                Date now = new Date();
-                String key = "DH" + sdf.format(now).replace("/", "").replace(":", "").replace(" ", "");
-                if (checkError() == 1) {
-                    Order order = new Order();
-                    order.setAccountID(accountID);
-                    order.setAddress(String.valueOf(edtAddress.getText()));
-                    order.setCreated_at(sdf.format(now));
-                    order.setName(String.valueOf(edtName.getText()));
-                    order.setNote(String.valueOf(edtNote.getText()));
-                    order.setPhone(String.valueOf(edtPhone.getText()));
-                    order.setShipperID("null");
-                    order.setStatus(1);
-                    order.setTotal(toPrice(String.valueOf(txtRemain.getText())));
-                    orderRef.child(key).setValue(order).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            order.setOrderID(key);
-                            showSuccesDialog("Đặt hàng thành công!\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi.", order);
+        btnSubmit.setOnClickListener(v -> {
+            DatabaseReference orderRef = db.getReference("Order");
+            DatabaseReference orderdetailRef = db.getReference("Order_Details");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+            Date now = new Date();
+            String key = "DH" + sdf.format(now).replace("/", "").replace(":", "").replace(" ", "");
+            if (checkError() == 1) {
+                Order order = new Order();
+                order.setAccountID(accountID);
+                order.setAddress(String.valueOf(edtAddress.getText()));
+                order.setCreated_at(sdf.format(now));
+                order.setName(String.valueOf(edtName.getText()));
+                order.setNote(String.valueOf(edtNote.getText()));
+                order.setPhone(String.valueOf(edtPhone.getText()));
+                order.setShipperID("null");
+                order.setStatus(1);
+                order.setTotal(toPrice(String.valueOf(txtRemain.getText())));
+                orderRef.child(key).setValue(order).addOnSuccessListener(unused -> {
+                    order.setOrderID(key);
+                    showSuccesDialog("Đặt hàng thành công!\nCảm ơn bạn đã sử dụng dịch vụ của chúng tôi.", order);
+                });
+                for (CartDetail detail : listCart) {
+                    OrderDetail orderDetail = new OrderDetail();
+                    orderDetail.setOrderID(key);
+                    orderDetail.setAmount(detail.getAmount());
+                    orderDetail.setPrice(detail.getPrice());
+                    orderDetail.setProductID(detail.getProductID());
+                    orderdetailRef.push().setValue(orderDetail);
+                }
+                //Clear Cart
+                cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot node : snapshot.getChildren()) {
+                            Cart cart = node.getValue(Cart.class);
+                            if (cart.getAccountID().equals(accountID)) {
+                                cart.setTotal(0);
+                                cartRef.child(node.getKey()).setValue(cart);
+                                detailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                        for (DataSnapshot node1 : snapshot1.getChildren()) {
+                                            CartDetail cartDetail = node1.getValue(CartDetail.class);
+                                            if (cartDetail.getCartID().equals(node.getKey())) {
+                                                detailRef.child(node1.getKey()).removeValue();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
                         }
-                    });
-                    for (CartDetail detail : listCart) {
-                        OrderDetail orderDetail = new OrderDetail();
-                        orderDetail.setOrderID(key);
-                        orderDetail.setAmount(detail.getAmount());
-                        orderDetail.setPrice(detail.getPrice());
-                        orderDetail.setProductID(detail.getProductID());
-                        orderdetailRef.push().setValue(orderDetail);
                     }
-                    //Clear Cart
-                    cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                //Delete Discount code
+                if (!String.valueOf(txtDiscount.getText()).equals("")) {
+                    customerRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot node : snapshot.getChildren()) {
-                                Cart cart = node.getValue(Cart.class);
-                                if (cart.getAccountID().equals(accountID)) {
-                                    cart.setTotal(0);
-                                    cartRef.child(node.getKey()).setValue(cart);
-                                    detailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                Customer customer = node.getValue(Customer.class);
+                                if (customer.getAccountID().equals(accountID)) {
+                                    code_cusRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot1) {
                                             for (DataSnapshot node1 : snapshot1.getChildren()) {
-                                                CartDetail cartDetail = node1.getValue(CartDetail.class);
-                                                if (cartDetail.getCartID().equals(node.getKey())) {
-                                                    detailRef.child(node1.getKey()).removeValue();
+                                                DiscountCode_Customer temp = node1.getValue(DiscountCode_Customer.class);
+                                                if (temp.getCustomer_id().equals(node.getKey()) && temp.getCode().equals(edtDiscountCode.getText() + "")) {
+                                                    code_cusRef.child(node1.getKey()).removeValue();
+                                                    break;
                                                 }
                                             }
                                         }
@@ -301,41 +330,6 @@ public class PaymentActivity extends AppCompatActivity {
 
                         }
                     });
-                    //Delete Discount code
-                    if (!String.valueOf(txtDiscount.getText()).equals("")) {
-                        customerRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot node : snapshot.getChildren()) {
-                                    Customer customer = node.getValue(Customer.class);
-                                    if (customer.getAccountID().equals(accountID)) {
-                                        code_cusRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot1) {
-                                                for (DataSnapshot node1 : snapshot1.getChildren()) {
-                                                    DiscountCode_Customer temp = node1.getValue(DiscountCode_Customer.class);
-                                                    if (temp.getCustomer_id().equals(node.getKey()) && temp.getCode().equals(edtDiscountCode.getText() + "")) {
-                                                        code_cusRef.child(node1.getKey()).removeValue();
-                                                        break;
-                                                    }
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                            }
-                                        });
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    }
                 }
             }
         });

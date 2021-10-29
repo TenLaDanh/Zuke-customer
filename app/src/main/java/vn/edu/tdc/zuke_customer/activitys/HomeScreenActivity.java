@@ -1,59 +1,77 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.BannerAdapter;
 import vn.edu.tdc.zuke_customer.adapters.CategoryAdapter;
+import vn.edu.tdc.zuke_customer.adapters.Product2Adapter;
 import vn.edu.tdc.zuke_customer.adapters.ProductAdapter;
-import vn.edu.tdc.zuke_customer.data_models.Catelogy;
+import vn.edu.tdc.zuke_customer.data_models.Banner;
+import vn.edu.tdc.zuke_customer.data_models.Category;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class HomeScreenActivity extends AppCompatActivity {
     // Khai báo biến:
     RecyclerView recyclerCate, recyclerGoiY, recyclerMuaNhieu;
-    ArrayList<Catelogy> listCate;
-    ArrayList<Product> listProduct;
+    ArrayList<Category> listCate;
+    ArrayList<Product> listProductSold, listProductRating;
+    ArrayList<Banner> listBanner;
     CategoryAdapter categoryAdapter;
-    ProductAdapter productAdapter;
-    // creating object of ViewPager
-    ViewPager mViewPager;
-
-    // images array
-    int[] images1 = {R.drawable.a1, R.drawable.a2, R.drawable.a3};
-
-    // Creating Object of ViewPagerAdapter
+    Product2Adapter productAdapterSold;
+    ProductAdapter productAdapterRating;
     BannerAdapter bannerAdapter;
+    SliderView imgHomeSlider;
+
+    Query querySortBySold, querySortBySuggestion, queryBanner;
+    DatabaseReference proRef = FirebaseDatabase.getInstance().getReference().child("Products");
+    DatabaseReference cateRef = FirebaseDatabase.getInstance().getReference().child("Categories");
+    DatabaseReference banRef = FirebaseDatabase.getInstance().getReference().child("Offers");
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
+
+        // Khởi tạo biến:
+        imgHomeSlider = findViewById(R.id.imageSlider);
         listCate = new ArrayList<>();
-        listProduct = new ArrayList<>();
+        listBanner = new ArrayList<>();
+        listProductSold = new ArrayList<>();
+        listProductRating = new ArrayList<>();
         categoryAdapter = new CategoryAdapter(this, listCate);
-        productAdapter = new ProductAdapter(this, listProduct);
-        data();
-        recyclerCate = findViewById(R.id.recycler_view);
-        recyclerCate.setHasFixedSize(true);
+        productAdapterSold = new Product2Adapter(this, listProductSold);
+        productAdapterRating = new ProductAdapter(this, listProductRating);
         recyclerGoiY = findViewById(R.id.recycler_view1);
-        recyclerGoiY.setHasFixedSize(true);
+        recyclerCate = findViewById(R.id.recycler_view);
         recyclerMuaNhieu = findViewById(R.id.recycler_view2);
+
+        // Gọi hàm lấy dữ liệu:
+        data();
+
+        // Recycleview:
+        recyclerCate.setHasFixedSize(true);
+        recyclerGoiY.setHasFixedSize(true);
         recyclerMuaNhieu.setHasFixedSize(true);
 
         // Đổ dữ liệu vào recyclerView:
@@ -61,31 +79,100 @@ public class HomeScreenActivity extends AppCompatActivity {
         recyclerCate.setAdapter(categoryAdapter);
 
         recyclerGoiY.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        recyclerGoiY.setAdapter(productAdapter);
+        recyclerGoiY.setAdapter(productAdapterRating);
 
         recyclerMuaNhieu.setLayoutManager(new GridLayoutManager(this, 2));
-        recyclerMuaNhieu.setAdapter(productAdapter);
+        recyclerMuaNhieu.setAdapter(productAdapterSold);
 
-        // Initializing the ViewPager Object
-        mViewPager = (ViewPager)findViewById(R.id.viewPagerMain);
         // Initializing the ViewPagerAdapter
-        bannerAdapter = new BannerAdapter(this, images1);
+        bannerAdapter = new BannerAdapter(this, listBanner);
         // Adding the Adapter to the ViewPager
-        mViewPager.setAdapter(bannerAdapter);
+        imgHomeSlider.setSliderAdapter(bannerAdapter);
     }
 
     public void data() {
-//        listCate.add(new Catelogy("1", "Điện thoại", "a"));
-//        listCate.add(new Catelogy("1", "Máy tính bảng", "a"));
-//        listCate.add(new Catelogy("1", "Laptop", "a"));
-//        listCate.add(new Catelogy("1", "Màn hình", "a"));
-//        listCate.add(new Catelogy("1", "Tivi", "a"));
-//
-//        listProduct.add(new Product("Product 1", 20000000));
-//        listProduct.add(new Product("Product 2", 20000000));
-//        listProduct.add(new Product("Product 3", 20000000));
-//        listProduct.add(new Product("Product 4", 20000000));
-//        listProduct.add(new Product("Product 5", 20000000));
-//        listProduct.add(new Product("Product 6", 20000000));
+        // Danh sách khuyến mãi:
+        queryBanner = banRef.limitToFirst(4);
+        queryBanner.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listBanner.clear();
+                for (DataSnapshot node : snapshot.getChildren()) {
+                    Banner banner = node.getValue(Banner.class);
+                    listBanner.add(banner);
+                }
+                bannerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Danh sách loại sản phẩm:
+        cateRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listCate.clear();
+                for (DataSnapshot node : snapshot.getChildren()) {
+                    Category category = node.getValue(Category.class);
+                    category.setKey(node.getKey());
+                    listCate.add(category);
+                }
+                categoryAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Lọc mua nhiều nhất
+        querySortBySold = proRef.orderByChild("sold").limitToLast(4);
+        querySortBySold.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                listProductSold.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Product product = dataSnapshot.getValue(Product.class);
+                    product.setKey(dataSnapshot.getKey());
+                    listProductSold.add(product);
+                }
+                Collections.reverse(listProductSold);
+                productAdapterSold.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Các sản phẩm gợi ý:
+        querySortBySuggestion = proRef.orderByChild("rating").limitToLast(6);
+        querySortBySuggestion.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int max = 0;
+                listProductRating.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Product product = dataSnapshot.getValue(Product.class);
+                    product.setKey(dataSnapshot.getKey());
+                    listProductRating.add(product);
+                }
+                Collections.reverse(listProductRating);
+                productAdapterRating.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

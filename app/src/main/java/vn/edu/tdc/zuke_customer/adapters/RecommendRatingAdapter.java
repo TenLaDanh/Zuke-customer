@@ -17,10 +17,6 @@ public class RecommendRatingAdapter extends RecyclerView.Adapter<RecommendRating
     Context context;
     ArrayList<String> items;
     RecommendRatingAdapter.ItemClick itemClickListener;
-    String to = "";
-    public void setTo(String to) {
-        this.to = to;
-    }
 
     public RecommendRatingAdapter(Context context, ArrayList<String> items) {
         this.context = context;
@@ -41,10 +37,6 @@ public class RecommendRatingAdapter extends RecyclerView.Adapter<RecommendRating
     public void onBindViewHolder(@NonNull RecommendRatingAdapter.ViewHolder holder, int position) {
         String item = items.get(position);
         holder.txtComment.setText(item);
-        if(to.equals("read")) {
-            holder.txtComment.setEnabled(false);
-            holder.txtComment.setFocusable(false);
-        }
         holder.itemView.setOnClickListener(v -> {
             if (itemClickListener != null) {
                 itemClickListener.getComment(item);

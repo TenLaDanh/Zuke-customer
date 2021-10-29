@@ -50,9 +50,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_price"
-            android:layout_toEndOf="@+id/img"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/img"
             android:drawableStart="@drawable/ic_baseline_star_24"
             android:text="4.3"
             android:textColor="@color/darkTextColor"
@@ -70,7 +70,7 @@
             android:textSize="11sp" />
 
         <TextView
-            android:id="@+id/txt_amount"
+            android:id="@+id/txt_pricemain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_name"

@@ -63,7 +63,7 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Product product = snapshot.getValue(Product.class);
                     product.setKey(snapshot.getKey());
-                    if(product.getKey().equals(item.getProductID())) {
+                    if (product.getKey().equals(item.getProductID())) {
                         holder.txtName.setText(product.getName());
                         StorageReference imageRef = FirebaseStorage.getInstance().getReference("images/products/"
                                 + product.getName() + "/" + product.getImage());
@@ -82,7 +82,7 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
         holder.txtComment.setText(item.getComment());
         // RecycleView:
         holder.recyclerView.setHasFixedSize(true);
-        list = new ArrayList<String> ();
+        list = new ArrayList<String>();
         list.add("Chất lượng sản phẩm tuyệt vời");
         list.add("Giá cả phù hợp");
         list.add("Rất đáng tiền");
@@ -91,20 +91,20 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
         adapter = new RecommendRatingAdapter(context, list);
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        if(to.equals("read")) {
-            holder.ratingBar.setEnabled(false);
+        if (to.equals("read")) {
+            holder.ratingBar.setIsIndicator(false);
             holder.txtComment.setEnabled(false);
-            adapter.setTo(to);
         }
-        holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> item.setRating(rating));
-
-        adapter.itemClickListener = s -> {
-            if(holder.txtComment.getText().toString().equals("")) {
-                holder.txtComment.setText(s);
-            } else {
-                holder.txtComment.setText(String.valueOf(holder.txtComment.getText()) + ".\n" + s);
-            }
-        };
+        holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> item.setRating((int) rating));
+        if (!to.equals("read")) {
+            adapter.itemClickListener = s -> {
+                if (holder.txtComment.getText().toString().equals("")) {
+                    holder.txtComment.setText(s);
+                } else {
+                    holder.txtComment.setText(holder.txtComment.getText().toString() + ".\n" + s);
+                }
+            };
+        }
         holder.txtComment.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

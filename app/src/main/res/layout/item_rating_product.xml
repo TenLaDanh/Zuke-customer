@@ -53,7 +53,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:stepSize=".5"
+            android:stepSize="1"
             android:rating="0" />
 
         <EditText

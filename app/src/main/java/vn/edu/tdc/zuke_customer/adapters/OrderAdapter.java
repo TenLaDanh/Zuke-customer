@@ -91,8 +91,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     }
 
     private String formatPrice(int price) {
-        return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
+        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
+        return s.substring(2, s.length()) + " ₫";
     }
 
     @Override

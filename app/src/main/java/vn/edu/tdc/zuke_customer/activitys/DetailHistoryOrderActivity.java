@@ -42,6 +42,8 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_order);
+
+        // Nhận đối tượng item từ intent
         intent = getIntent();
         item = intent.getParcelableExtra("item");
 
@@ -63,6 +65,7 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Kiểm tra nếu nhận được đối tượng item thì set dữ liệu
         if(item != null) {
             txtName.setText("Họ tên người nhận: " + item.getName());
             txtPhone.setText("Số điện thoại: " + item.getPhone());
@@ -88,6 +91,7 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         }
     }
 
+    // Lấy dữ liệu hiển thị:
     private void data() {
         order_detailRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -108,8 +112,10 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         });
     }
 
+    // Format tiền:
     private String formatPrice(int price) {
-        return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
+        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
+        return s.substring(2, s.length()) + " ₫";
     }
 }

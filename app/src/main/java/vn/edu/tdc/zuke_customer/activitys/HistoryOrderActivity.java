@@ -29,7 +29,7 @@ import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class HistoryOrderActivity extends AppCompatActivity {
-    String userID = "-MmB8LnpJ6Fjstfl1jzw";
+    String userID = "abc05684428156";
     Handler handler = new Handler();
     RecyclerView recyclerView;
     ArrayList<Order> list;
@@ -55,6 +55,7 @@ public class HistoryOrderActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    // Khai báo và khởi tạo đối tượng itemClickListener
     private OrderAdapter.ItemClickListener itemClickListener = new OrderAdapter.ItemClickListener() {
         @Override
         public void getInfor(Order item) {
@@ -123,6 +124,7 @@ public class HistoryOrderActivity extends AppCompatActivity {
         }
     };
 
+    // Lấy dữ liệu hiển thị:
     public void data() {
         orderRef.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")

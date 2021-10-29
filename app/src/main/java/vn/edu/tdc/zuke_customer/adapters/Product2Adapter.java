@@ -2,8 +2,6 @@ package vn.edu.tdc.zuke_customer.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.text.SpannableString;
-import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,24 +28,24 @@ import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
+public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHolder> {
     private Context context;
     private ArrayList<Product> items;
     DatabaseReference offerDetailRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
 
-    public ProductAdapter(Context context, ArrayList<Product> items) {
+    public Product2Adapter(Context context, ArrayList<Product> items) {
         this.context = context;
         this.items = items;
     }
 
     @NonNull
     @Override
-    public ProductAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ProductAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_goiy, parent, false));
+    public Product2Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new Product2Adapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_muanhieu, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ProductAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull Product2Adapter.ViewHolder holder, int position) {
         Product item = items.get(position);
         holder.itemTitle.setText(item.getName());
         holder.itemImage.setImageResource(R.drawable.app);
@@ -85,7 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             }
         });
         //Rating:
-        if (item.getRating() > 0) {
+        if(item.getRating() > 0) {
             holder.itemRating.setText(item.getRating() + "");
         } else {
             holder.itemRating.setVisibility(View.GONE);

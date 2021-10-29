@@ -442,7 +442,6 @@ public class PaymentActivity extends AppCompatActivity {
         }
         alertDialog.show();
     }
-
     private void showWarningDialog(String notify) {
         AlertDialog.Builder builder = new AlertDialog.Builder(PaymentActivity.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(PaymentActivity.this).inflate(

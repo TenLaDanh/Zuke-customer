@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -11,15 +10,16 @@
         android:layout_height="wrap_content">
 
         <TextView
+            style="@style/viewParent.headerText.NoMode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/profile"
-            style="@style/viewParent.headerText.NoMode"
             android:textColor="#000000"
             android:textSize="24sp" />
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/ttcanhan"
         android:layout_width="match_parent"
         android:layout_height="110dp"
         android:layout_marginTop="22dp"
@@ -34,27 +34,51 @@
             android:src="@drawable/man" />
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@+id/profile"
             android:text="@string/nameshow"
             android:textColor="#ffff"
             android:textSize="22sp" />
 
         <TextView
+            android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
+            android:layout_below="@+id/name"
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_toEndOf="@+id/profile"
             android:text="@string/phone"
             android:textColor="#ffff"
             android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/imgType"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/phone"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/profile"
+            android:src="@drawable/ic_baseline_emoji_events_24_normal" />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phone"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toEndOf="@+id/imgType"
+            android:text="@string/phone"
+            android:textColor="#ffff"
+            android:textSize="18sp" />
 
 
         <ImageView
@@ -75,7 +99,7 @@
         android:weightSum="3">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/bg"
@@ -83,6 +107,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/donmua"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -108,6 +133,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/donhoanthanh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -134,6 +160,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/donhuy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -154,11 +181,12 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:padding="10dp"
-        android:background="@drawable/bg_search"
+        android:id="@+id/lichsudh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp">
+        android:layout_marginTop="50dp"
+        android:background="@drawable/bg_search"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/icon_ar"
@@ -185,11 +213,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:padding="10dp"
-        android:background="@drawable/bg_search"
+        android:id="@+id/hotro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp">
+        android:layout_marginTop="34dp"
+        android:background="@drawable/bg_search"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/icon_set"
@@ -216,11 +245,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:padding="10dp"
-        android:background="@drawable/bg_search"
+        android:id="@+id/gioithieu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp">
+        android:layout_marginTop="34dp"
+        android:background="@drawable/bg_search"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/icon_sh"
@@ -247,11 +277,12 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:padding="10dp"
-        android:background="@drawable/bg_search"
+        android:id="@+id/dangxuat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="34dp">
+        android:layout_marginTop="34dp"
+        android:background="@drawable/bg_search"
+        android:padding="10dp">
 
         <ImageView
             android:id="@+id/icon_ser"

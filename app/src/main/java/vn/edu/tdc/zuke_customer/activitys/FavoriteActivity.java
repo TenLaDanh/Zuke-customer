@@ -1,7 +1,6 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +28,6 @@ import vn.edu.tdc.zuke_customer.adapters.FavoriteAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Cart;
 import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.Favorite;
-import vn.edu.tdc.zuke_customer.data_models.Order;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class FavoriteActivity extends AppCompatActivity {
@@ -184,11 +182,6 @@ public class FavoriteActivity extends AppCompatActivity {
         }
         alertDialog.show();
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                alertDialog.dismiss();
-            }
-        }, 1500);
+        handler.postDelayed(alertDialog::dismiss, 1500);
     }
 }

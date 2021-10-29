@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -104,19 +106,22 @@ public class CategoryActivity extends Activity {
                     }
 
                     listManuProduct.clear();
-                    for (ArrayList<Product> list : listPro) {
-                        manuRef.child(list.get(0).getManu_id()).get().addOnSuccessListener(dataSnapshot -> {
-                            String manuName = dataSnapshot.getValue(Manufactures.class).getName();
-                            if (list.size() > 0) {
-                                listProduct = list;
-                                if(listProduct.size() > 4) {
-                                    listProduct = new ArrayList<>(list.subList(0, 4));
+                    if(listPro != null) {
+                        for (ArrayList<Product> list : listPro) {
+                            manuRef.child(list.get(0).getManu_id()).get().addOnSuccessListener(dataSnapshot -> {
+                                String manuName = dataSnapshot.getValue(Manufactures.class).getName();
+                                if (list.size() > 0) {
+                                    listProduct = list;
+                                    if(listProduct.size() > 4) {
+                                        listProduct = new ArrayList<>(list.subList(0, 4));
+                                    }
+                                    listManuProduct.add(new ManuProduct(listProduct, manuName));
+                                    adapterManuProduct.notifyDataSetChanged();
                                 }
-                                listManuProduct.add(new ManuProduct(listProduct, manuName));
-                                adapterManuProduct.notifyDataSetChanged();
-                            }
-                        });
+                            });
+                        }
                     }
+                    adapterManuProduct.notifyDataSetChanged();
                 }
 
                 @Override

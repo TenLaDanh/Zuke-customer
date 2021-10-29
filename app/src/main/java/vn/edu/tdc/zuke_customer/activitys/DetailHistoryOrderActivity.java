@@ -35,8 +35,9 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<OrderDetail> list;
     OrderDetailAdapter adapter;
-    DatabaseReference statusRef = FirebaseDatabase.getInstance().getReference("Status");
-    DatabaseReference order_detailRef = FirebaseDatabase.getInstance().getReference("Order_Details");
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference statusRef = db.getReference("Status");
+    DatabaseReference order_detailRef = db.getReference("Order_Details");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

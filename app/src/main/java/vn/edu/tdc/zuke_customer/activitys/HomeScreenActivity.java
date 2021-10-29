@@ -43,9 +43,10 @@ public class HomeScreenActivity extends AppCompatActivity {
     SliderView imgHomeSlider;
 
     Query querySortBySold, querySortBySuggestion, queryBanner;
-    DatabaseReference proRef = FirebaseDatabase.getInstance().getReference().child("Products");
-    DatabaseReference cateRef = FirebaseDatabase.getInstance().getReference().child("Categories");
-    DatabaseReference banRef = FirebaseDatabase.getInstance().getReference().child("Offers");
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference proRef = db.getReference().child("Products");
+    DatabaseReference cateRef = db.getReference().child("Categories");
+    DatabaseReference banRef = db.getReference().child("Offers");
 
 
     @Override

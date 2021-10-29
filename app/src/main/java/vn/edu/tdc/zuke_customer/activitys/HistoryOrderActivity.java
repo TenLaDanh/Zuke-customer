@@ -29,20 +29,23 @@ import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class HistoryOrderActivity extends AppCompatActivity {
-    String userID = "abc05684428156";
+    String accountID = "";
     Handler handler = new Handler();
     RecyclerView recyclerView;
     ArrayList<Order> list;
     OrderAdapter adapter;
-    DatabaseReference orderRef = FirebaseDatabase.getInstance().getReference("Order");
-    DatabaseReference ratingRef = FirebaseDatabase.getInstance().getReference("Rating");
-    DatabaseReference order_detailRef = FirebaseDatabase.getInstance().getReference("Order_Details");
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference orderRef = db.getReference("Order");
+    DatabaseReference ratingRef = db.getReference("Rating");
+    DatabaseReference order_detailRef = db.getReference("Order_Details");
     Intent intent;
     String check = "true";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_list);
+        intent = getIntent();
+        accountID = intent.getStringExtra("accountID");
 
         // Đổ dữ liệu recycleview:
         recyclerView = findViewById(R.id.list);
@@ -133,7 +136,8 @@ public class HistoryOrderActivity extends AppCompatActivity {
                 list.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Order order = snapshot.getValue(Order.class);
-                    if(userID.equals(order.getAccountID())) {
+                    order.setOrderID(snapshot.getKey());
+                    if(accountID.equals(order.getAccountID())) {
                         list.add(order);
                     }
                 }

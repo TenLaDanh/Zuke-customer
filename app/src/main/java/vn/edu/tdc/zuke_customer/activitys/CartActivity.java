@@ -79,7 +79,7 @@ public class CartActivity extends AppCompatActivity {
                                     detail.setKey(node1.getKey());
                                     if (cart.getCartID().equals(detail.getCartID())) {
                                         listCart.add(detail);
-                                        total += detail.getTotalPrice();
+                                        total += detail.getPrice();
                                     }
                                 }
                                 btnPayment.setText("Tổng tiền : " + formatPrice(cart.getTotal()));
@@ -133,14 +133,14 @@ public class CartActivity extends AppCompatActivity {
                                     }
                                     if (maxSale != 0) {
                                         int priceDiscount = product.getPrice() / 100 * (100-maxSale);
-                                        item.setTotalPrice(priceDiscount * value);
-                                        map.put("totalPrice", item.getTotalPrice());
+                                        item.setPrice(priceDiscount);
+                                        map.put("price", item.getPrice());
                                         DatabaseReference detailRef = db.getReference("Cart_Detail");
                                         detailRef.child(item.getKey()).updateChildren(map);
                                         cartAdapter.notifyDataSetChanged();
                                     } else {
-                                        item.setTotalPrice(product.getPrice() * value);
-                                        map.put("totalPrice", item.getTotalPrice());
+                                        item.setPrice(product.getPrice());
+                                        map.put("price", item.getPrice());
                                         DatabaseReference detailRef = db.getReference("Cart_Detail");
                                         detailRef.child(item.getKey()).updateChildren(map);
                                         cartAdapter.notifyDataSetChanged();
@@ -187,7 +187,7 @@ public class CartActivity extends AppCompatActivity {
                 for (DataSnapshot node : snapshot.getChildren()) {
                     CartDetail detail = node.getValue(CartDetail.class);
                     if (detail.getCartID().equals(cartID)) {
-                        total += detail.getTotalPrice();
+                        total += detail.getPrice()*detail.getAmount();
                     }
                 }
                 HashMap<String, Object> map = new HashMap<>();

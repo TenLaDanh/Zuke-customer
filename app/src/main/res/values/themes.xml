@@ -87,4 +87,9 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
+    <!-- Custom dialog -->
+    <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    </style>
+
 </resources>

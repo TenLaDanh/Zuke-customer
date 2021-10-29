@@ -12,6 +12,24 @@ public class Product {
     private String description;
     private int import_price;
     private int price;
+    private int rating;
+    private int status;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
 
     public int getSold() {
         return sold;

@@ -4,7 +4,7 @@ public class CartDetail {
     private String cartID;
     private String productID;
     private int amount;
-    private int totalPrice;
+    private int price;
     private String key;
 
     public String getCartID() {
@@ -31,12 +31,12 @@ public class CartDetail {
         this.amount = amount;
     }
 
-    public int getTotalPrice() {
-        return totalPrice;
+    public int getPrice() {
+        return price;
     }
 
-    public void setTotalPrice(int totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setPrice(int totalPrice) {
+        this.price = totalPrice;
     }
 
     public String getKey() {
@@ -50,10 +50,10 @@ public class CartDetail {
     public CartDetail() {
     }
 
-    public CartDetail(String cartID, String productID, int amount, int totalPrice) {
+    public CartDetail(String cartID, String productID, int amount, int price) {
         this.cartID = cartID;
         this.productID = productID;
         this.amount = amount;
-        this.totalPrice = totalPrice;
+        this.price = price;
     }
 }

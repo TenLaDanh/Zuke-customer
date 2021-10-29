@@ -3,23 +3,15 @@ package vn.edu.tdc.zuke_customer.adapters;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
-import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,7 +27,6 @@ import java.util.Locale;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.CartDetail;
-import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapter.ViewHolder> {
@@ -70,10 +61,10 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
                         //set name
                         holder.itemName.setText(product.getName());
                         //set gia san pham
-                        holder.itemPrice.setText(formatPrice(item.getTotalPrice()/item.getAmount()));
+                        holder.itemPrice.setText(formatPrice(item.getPrice()));
 
                         holder.itemAmount.setText("Số lương : "+item.getAmount());
-                        holder.itemTotal.setText(formatPrice(item.getTotalPrice()));
+                        holder.itemTotal.setText(formatPrice(item.getPrice()*item.getAmount()));
                         //set hinh anh
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         final long ONE_MEGABYTE = 1024 * 1024;

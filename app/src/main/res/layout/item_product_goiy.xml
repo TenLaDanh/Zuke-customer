@@ -31,8 +31,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_image"
-            android:text="Item Title"
             android:layout_marginTop="10dp"
+            android:lines="2"
+            android:ellipsize="end"
+            android:text="Item Title"
             android:textColor="@color/contentTextColor"
             android:textSize="16sp" />
 
@@ -51,10 +53,7 @@
             android:id="@+id/item_price_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_title"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="13dp"
-            android:layout_toRightOf="@+id/item_price"
+            android:layout_below="@+id/item_price"
             android:text="Item Title"
             android:textSize="13sp" />
 
@@ -62,8 +61,8 @@
             android:id="@+id/item_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_price"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/item_price_main"
+            android:layout_marginTop="9dp"
             android:drawableStart="@drawable/ic_baseline_star_24"
             android:text="4.3"
             android:textColor="@color/darkTextColor"
@@ -73,7 +72,7 @@
             android:id="@+id/item_rating_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/item_price"
+            android:layout_below="@+id/item_price_main"
             android:layout_marginStart="5dp"
             android:layout_marginTop="11dp"
             android:layout_toRightOf="@+id/item_rating"

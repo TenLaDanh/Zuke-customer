@@ -1,6 +1,6 @@
 package vn.edu.tdc.zuke_customer.data_models;
 
-public class Catelogy {
+public class Manufactures {
     public String key;
     public String name;
     public String image;
@@ -29,12 +29,12 @@ public class Catelogy {
         this.image = image;
     }
 
-    public Catelogy(String key, String name, String image) {
+    public Manufactures(String key, String name, String image) {
         this.key = key;
         this.name = name;
         this.image = image;
     }
 
-    public Catelogy() {
+    public Manufactures() {
     }
 }

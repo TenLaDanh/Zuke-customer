@@ -39,12 +39,12 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_order, parent, false));
+    public OrderDetailAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new OrderDetailAdapter.ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_order, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull OrderDetailAdapter.ViewHolder holder, int position) {
         OrderDetail item = items.get(position);
         // Lấy tên, ảnh từ products:
         proRef.addValueEventListener(new ValueEventListener() {

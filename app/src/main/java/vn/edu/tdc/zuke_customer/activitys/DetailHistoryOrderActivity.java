@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,27 +22,42 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import vn.edu.tdc.zuke_customer.R;
+import vn.edu.tdc.zuke_customer.adapters.OrderAdapter;
 import vn.edu.tdc.zuke_customer.adapters.OrderDetailAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Order;
 import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
+import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class DetailHistoryOrderActivity extends AppCompatActivity {
     // Khai báo biến:
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     TextView txtTotal, txtDate, txtStatus, txtNote, txtName, txtAddress, txtPhone;
     Intent intent;
     Order item = null;
     RecyclerView recyclerView;
     ArrayList<OrderDetail> list;
     OrderDetailAdapter adapter;
-    DatabaseReference statusRef = FirebaseDatabase.getInstance().getReference("Status");
-    DatabaseReference order_detailRef = FirebaseDatabase.getInstance().getReference("Order_Details");
+    FirebaseDatabase db = FirebaseDatabase.getInstance();
+    DatabaseReference statusRef = db.getReference("Status");
+    DatabaseReference order_detailRef = db.getReference("Order_Details");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_order);
+
+        // Nhận đối tượng item từ intent
         intent = getIntent();
         item = intent.getParcelableExtra("item");
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(item.getOrderID());
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Khởi tạo biến:
         txtTotal = findViewById(R.id.txt_tongtien);
@@ -61,6 +77,7 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        // Kiểm tra nếu nhận được đối tượng item thì set dữ liệu
         if(item != null) {
             txtName.setText("Họ tên người nhận: " + item.getName());
             txtPhone.setText("Số điện thoại: " + item.getPhone());
@@ -86,6 +103,13 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    // Lấy dữ liệu hiển thị:
     private void data() {
         order_detailRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,6 +130,7 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         });
     }
 
+    // Format tiền:
     private String formatPrice(int price) {
         String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);

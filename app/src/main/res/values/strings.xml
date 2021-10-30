@@ -49,8 +49,7 @@
     <string name="motasp">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris porttitor vulputate elit non mollis. Aliquam sed sagittis lacus, id sollicitudin tellus. Pellentesque viverra tincidunt neque, sit amet imperdiet ipsum eleifend et. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur et pulvinar tellus. Fusce a lacinia nibh. Fusce fermentum mollis condimentum. Donec scelerisque tristique elit at consectetur. Nam ullamcorper eget urna sed dictum. Suspendisse venenatis, tortor tempor sollicitudin condimentum, orci magna accumsan velit, sed fringilla massa massa ut justo. Sed sit amet elit metus. Aliquam cursus lobortis enim. Vivamus ut fermentum risus. Nam ac ultricies ante. Aliquam sit amet velit luctus, malesuada quam sed, maximus risus. Curabitur id arcu non risus consectetur mollis. Nullam fermentum quis diam vitae facilisis.</string>
     <string name="rating">ĐÁNH GIÁ SẢN PHẨM</string>
     <string name="splienquan">Sản phẩm liên quan</string>
-    <string name="facebook_app_id">876594193035827</string>
-    <string name="fb_login_protocol_scheme">fb876594193035827</string>
+
     <string-array name="mau">
         <item>Màu 1</item>
         <item>Màu 2</item>

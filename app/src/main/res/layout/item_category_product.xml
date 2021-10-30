@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
+    android:id="@+id/cardView"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
@@ -11,6 +12,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="2dp"
@@ -31,8 +33,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/item_image"
             android:layout_marginTop="4dp"
-            android:text="Item Title Item Title"
             android:gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="Item Title Item Title"
             android:textColor="@color/contentTextColor"
             android:textSize="16sp" />
 

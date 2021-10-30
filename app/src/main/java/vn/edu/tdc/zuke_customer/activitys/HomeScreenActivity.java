@@ -121,6 +121,15 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         }
     };
 
+    private final Product2Adapter.ItemClick itemClick1 = new Product2Adapter.ItemClick() {
+        @Override
+        public void getDetailProduct(Product item) {
+            intent = new Intent(HomeScreenActivity.this, DetailProductActivity.class);
+            intent.putExtra("item", item);
+            startActivity(intent);
+        }
+    };
+
     // Hàm lấy dữ liệu
     public void data() {
         // Danh sách khuyến mãi:

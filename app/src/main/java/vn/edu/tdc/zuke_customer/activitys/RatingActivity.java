@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +37,8 @@ import vn.edu.tdc.zuke_customer.data_models.Order;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class RatingActivity extends AppCompatActivity {
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     String orderID = "", to = "";
     RecyclerView recyclerView;
     ArrayList<Rating> list;
@@ -50,6 +53,16 @@ public class RatingActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_rating);
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleDGSP);
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Nhận dữ liệu từ intent
         intent = getIntent();
         to = intent.getStringExtra("to");
         orderID = intent.getStringExtra("key");
@@ -77,6 +90,12 @@ public class RatingActivity extends AppCompatActivity {
         data();
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private int checkError() {

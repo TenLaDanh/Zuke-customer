@@ -1,6 +1,7 @@
 package vn.edu.tdc.zuke_customer.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import vn.edu.tdc.zuke_customer.R;
+import vn.edu.tdc.zuke_customer.activitys.CategoryActivity;
+import vn.edu.tdc.zuke_customer.activitys.DetailProductActivity;
+import vn.edu.tdc.zuke_customer.activitys.HomeScreenActivity;
 import vn.edu.tdc.zuke_customer.data_models.ManuProduct;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
@@ -54,10 +58,17 @@ public class ManuProductAdapter extends RecyclerView.Adapter<ManuProductAdapter.
 
         // Product:
         Product1Adapter adapter = new Product1Adapter(context, listProduct);
+        adapter.setItemClickListener(itemClickProduct);
         holder.rcvProduct.setLayoutManager(new GridLayoutManager(holder.itemView.getContext(), 2));
         holder.rcvProduct.setHasFixedSize(true);
         holder.rcvProduct.setAdapter(adapter);
     }
+
+    private final Product1Adapter.ItemClickProduct itemClickProduct = item -> {
+        Intent intent = new Intent(context, DetailProductActivity.class);
+        intent.putExtra("item", item);
+        context.startActivity(intent);
+    };
 
     @Override
     public int getItemCount() {

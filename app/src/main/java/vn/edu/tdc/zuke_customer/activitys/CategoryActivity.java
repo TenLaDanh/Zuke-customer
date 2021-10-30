@@ -27,6 +27,7 @@ import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.Category1Adapter;
 import vn.edu.tdc.zuke_customer.adapters.ManuProductAdapter;
+import vn.edu.tdc.zuke_customer.adapters.Product2Adapter;
 import vn.edu.tdc.zuke_customer.data_models.Category;
 import vn.edu.tdc.zuke_customer.data_models.ManuProduct;
 import vn.edu.tdc.zuke_customer.data_models.Manufactures;
@@ -62,8 +63,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         setSupportActionBar(toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
         subtitleAppbar.setText(R.string.titleDMSP);
-//        assert getSupportActionBar() != null;   //null check
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);

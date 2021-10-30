@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +34,8 @@ import java.util.UUID;
 import vn.edu.tdc.zuke_customer.R;
 
 public class ChangePasswordActivity extends AppCompatActivity {
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     String accountID = "abc05684428156";
     Intent intent;
     TextView title, mess;
@@ -48,6 +51,14 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
         intent = getIntent();
         accountID = intent.getStringExtra("accountID");
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleTDMK);
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Khởi tạo biển:
         btnSubmit = findViewById(R.id.buttonChangePass);
@@ -88,6 +99,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    // Hàm kiểm tra lỗi
     private int checkError() {
         if (editTextPassword.getText().equals("")) {
             showWarningDialog("Mật khẩu hiện tại không được để trống!");

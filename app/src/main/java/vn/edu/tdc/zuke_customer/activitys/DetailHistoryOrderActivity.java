@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,8 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class DetailHistoryOrderActivity extends AppCompatActivity {
     // Khai báo biến:
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     TextView txtTotal, txtDate, txtStatus, txtNote, txtName, txtAddress, txtPhone;
     Intent intent;
     Order item = null;
@@ -47,6 +50,14 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         // Nhận đối tượng item từ intent
         intent = getIntent();
         item = intent.getParcelableExtra("item");
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(item.getOrderID());
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Khởi tạo biến:
         txtTotal = findViewById(R.id.txt_tongtien);
@@ -90,6 +101,12 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     // Lấy dữ liệu hiển thị:

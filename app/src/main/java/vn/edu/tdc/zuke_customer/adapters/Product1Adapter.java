@@ -51,7 +51,7 @@ public class Product1Adapter extends RecyclerView.Adapter<Product1Adapter.ViewHo
 
         holder.cardCategory.setOnClickListener(v -> {
             if (itemClickProduct != null) {
-                itemClickProduct.detailProduct(item.getKey());
+                itemClickProduct.detailProduct(item);
             } else return;
         });
     }
@@ -75,6 +75,6 @@ public class Product1Adapter extends RecyclerView.Adapter<Product1Adapter.ViewHo
     }
 
     public interface ItemClickProduct {
-        void detailProduct(String productID);
+        void detailProduct(Product item);
     }
 }

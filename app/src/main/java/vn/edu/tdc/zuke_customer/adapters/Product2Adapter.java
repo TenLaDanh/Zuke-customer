@@ -31,11 +31,16 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHolder> {
     private Context context;
     private ArrayList<Product> items;
+    Product2Adapter.ItemClick itemClick;
     DatabaseReference offerDetailRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
 
     public Product2Adapter(Context context, ArrayList<Product> items) {
         this.context = context;
         this.items = items;
+    }
+
+    public void setItemClickListener(Product2Adapter.ItemClick itemClickListener) {
+        this.itemClick = itemClickListener;
     }
 
     @NonNull
@@ -95,6 +100,12 @@ public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHo
         } else {
             holder.itemRatingAmount.setVisibility(View.INVISIBLE);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if(itemClick != null) {
+                itemClick.getDetailProduct(item);
+            } else return;
+        });
     }
 
     private String formatPrice(int price) {
@@ -122,5 +133,9 @@ public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHo
             itemRating = view.findViewById(R.id.item_rating);
             itemRatingAmount = view.findViewById(R.id.item_rating_amount);
         }
+    }
+
+    public interface ItemClick {
+        void getDetailProduct(Product item);
     }
 }

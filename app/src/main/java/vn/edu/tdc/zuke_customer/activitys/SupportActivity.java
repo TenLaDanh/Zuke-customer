@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.SupportAdapter;
@@ -16,6 +18,8 @@ import vn.edu.tdc.zuke_customer.data_models.TheCustomerConslutant;
 
 public class SupportActivity extends AppCompatActivity {
     // Khai báo biến:
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     ListView lvQuestion;
     SupportAdapter conslutantAdapter;
 
@@ -23,6 +27,15 @@ public class SupportActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_support);
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleHT);
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         setControl();
         addData();
         lvQuestion.setOnItemClickListener((parent, view, position, id) -> {
@@ -34,6 +47,12 @@ public class SupportActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void addData() {

@@ -17,9 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParsePosition;
@@ -38,6 +36,8 @@ import java.util.UUID;
 import vn.edu.tdc.zuke_customer.R;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    Toolbar toolbar;
+    TextView subtitleAppbar;
     String accountID = "abc05684428156", userID = "-Mn-ErvarWALssFzgmSl";
     Intent intent;
     TextView title, mess;
@@ -57,9 +57,18 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_profile);
 
+        // Nhận dữ liệu từ intent:
 //        intent = getIntent();
 //        userID = intent.getStringExtra("userID");
 //        accountID = intent.getStringExtra("accountID");
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleCSTTCN);
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Khởi tạo biến:
         imgCus = findViewById(R.id.img);
@@ -93,6 +102,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void chooseImage() {
@@ -158,32 +173,18 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                             if (filePath != null) {
                                 UUID randomId = UUID.randomUUID();
                                 final String imageName = "images/profile/" + randomId + "jpg";
-                                storage.child(imageName).putFile(filePath).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        StorageReference myStorageRef = FirebaseStorage.getInstance().getReference(imageName);
-                                        myStorageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-                                                cusRef.child("dob").setValue(edtDOB.getText() + "");
-                                                cusRef.child("name").setValue(edtName.getText() + "");
-                                                cusRef.child("email").setValue(edtEmail.getText() + "");
-                                                String filePath = uri.toString();
-                                                cusRef.child("Customer").child("image").setValue(filePath).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        alertDialog.dismiss();
-                                                        showSuccesDialog("Cập nhật thông tin thành công");
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        showWarningDialog("Cập nhật thông tin thất bại!");
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
+                                storage.child(imageName).putFile(filePath).addOnSuccessListener(taskSnapshot -> {
+                                    StorageReference myStorageRef = FirebaseStorage.getInstance().getReference(imageName);
+                                    myStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                                        cusRef.child("dob").setValue(edtDOB.getText() + "");
+                                        cusRef.child("name").setValue(edtName.getText() + "");
+                                        cusRef.child("email").setValue(edtEmail.getText() + "");
+                                        String filePath = uri.toString();
+                                        cusRef.child("image").setValue(filePath).addOnSuccessListener(unused -> {
+                                            alertDialog.dismiss();
+                                            showSuccesDialog("Cập nhật thông tin thành công");
+                                        }).addOnFailureListener(e -> showWarningDialog("Cập nhật thông tin thất bại!"));
+                                    });
                                 });
                             }
                             else {

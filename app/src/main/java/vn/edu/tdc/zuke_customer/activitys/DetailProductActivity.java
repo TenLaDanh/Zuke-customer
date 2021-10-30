@@ -1,12 +1,19 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -14,12 +21,16 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,17 +48,22 @@ import java.util.Locale;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.CommentAdapter;
 import vn.edu.tdc.zuke_customer.adapters.ProductAdapter;
+import vn.edu.tdc.zuke_customer.data_models.Cart;
+import vn.edu.tdc.zuke_customer.data_models.CartDetail;
+import vn.edu.tdc.zuke_customer.data_models.Favorite;
 import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
     // Khai báo biến:
-    String accountID = "abc05684428156";
+    String accountID = "abc05684428156", cartID = "";
+    Handler handler = new Handler();
+    boolean check = true;
     Toolbar toolbar;
     Product item = null;
     Intent intent;
-    TextView subtitleAppbar, price, sold, price_main, name, description, rating, detail;
+    TextView subtitleAppbar, price, sold, price_main, name, description, rating, detail, title, mess;
     ImageView imgProduct, addCart, hotline;
     ToggleButton button_favorite;
     Button btnMuaNgay;
@@ -58,12 +74,15 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     ArrayList<Product> listRelate;
     ArrayList<Rating> listComment;
     CommentAdapter commentAdapter;
+    private static final int REQUEST_PHONE_CALL = 1;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference offerDetailRef = db.getReference("Offer_Details");
     DatabaseReference proRef = db.getReference("Products");
     DatabaseReference ratingRef = db.getReference("Rating");
     DatabaseReference favoriteRef = db.getReference("Favorite");
+    DatabaseReference cartRef = db.getReference("Cart");
+    DatabaseReference cartDetailRef = db.getReference("Cart_Detail");
     Query queryComment, queryRelate;
 
     @Override
@@ -103,14 +122,15 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         listComment = new ArrayList<>();
         listRelate = new ArrayList<>();
         productRelate = new ProductAdapter(this, listRelate);
+        productRelate.setItemClickListener(itemClick);
         commentAdapter = new CommentAdapter(this, listComment);
 
         // Sự kiện cho click cho các đối tượng:
         btnMuaNgay.setOnClickListener(this);
+        button_favorite.setOnClickListener(this);
         detail.setOnClickListener(this);
         hotline.setOnClickListener(this);
         addCart.setOnClickListener(this);
-        button_favorite.setOnClickListener(this);
 
         // Recycleview:
         rcvComment.setHasFixedSize(true);
@@ -184,7 +204,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 sold.setVisibility(View.GONE);
             }
             // Kiểm tra trong yêu thích:
-            favoriteRef.addValueEventListener(new ValueEventListener() {
+            favoriteRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot node : snapshot.getChildren()) {
@@ -204,10 +224,35 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+    private final ProductAdapter.ItemClick itemClick = new ProductAdapter.ItemClick() {
+        @Override
+        public void getDetailProduct(Product item) {
+            intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
+            intent.putExtra("item", item);
+            startActivity(intent);
+            finish();
+        }
+    };
+
     private String formatPrice(int price) {
         String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
         return s.substring(2, s.length()) + " ₫";
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PHONE_CALL) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + "0123456789"));
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+                }
+                startActivity(intent);
+            }
+        }
     }
 
     private void data() {
@@ -264,6 +309,162 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onClick(View v) {
+        if (v == btnMuaNgay) {
 
+        }
+        else if (v == hotline) {
+            intent = new Intent(Intent.ACTION_CALL);
+            intent.setData(Uri.parse("tel:" + "0123456789"));
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+            }
+            startActivity(intent);
+        }
+        else if (v == addCart) {
+            // Kiểm tra đã có giỏ hàng chưa?
+            cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    cartID = "";
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        if (dataSnapshot.child("accountID").getValue(String.class).equals(accountID)) {
+                            // Nếu có thì? -> lấy CartID
+                            cartID = dataSnapshot.getKey();
+                            cartDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                    check = true;
+                                    int total = dataSnapshot.child("total").getValue(Integer.class);
+                                    for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
+                                        CartDetail cartDetail = dataSnapshot1.getValue(CartDetail.class);
+                                        cartDetail.setKey(dataSnapshot1.getKey());
+                                        if (cartDetail.getCartID().equals(cartID) && cartDetail.getProductID().equals(item.getKey())) {
+                                            check = false;
+                                            int amount = cartDetail.getAmount() + 1;
+                                            cartDetailRef.child(cartDetail.getKey()).child("amount").setValue(amount);
+                                            cartDetailRef.child(cartDetail.getKey()).child("price").setValue(formatInt(price.getText().toString()));
+                                            cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
+                                            break;
+                                        }
+                                    }
+                                    if (check) {
+                                        CartDetail cartDetail = new CartDetail(cartID, item.getKey(), 1, formatInt(price.getText().toString()));
+                                        cartDetailRef.push().setValue(cartDetail);
+                                        cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                            break;
+                        }
+                    }
+                    // Nếu chưa thì? -> tạo mới
+                    if (cartID.equals("")) {
+                        Cart cart = new Cart(accountID, 0);
+                        String key = cartRef.push().getKey();
+                        cartRef.child(key).setValue(cart);
+                        cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
+                        CartDetail cartDetail = new CartDetail(key, item.getKey(), 1, formatInt(price.getText().toString()));
+                        cartDetailRef.push().setValue(cartDetail);
+                        cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
+                    }
+
+                    showSuccesDialog("Thêm vào giỏ hàng thành công!");
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+        else if (v == button_favorite) {
+            if (!button_favorite.isChecked()) {
+                favoriteRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot node : snapshot.getChildren()) {
+                            if (node.child("userId").getValue(String.class).equals(accountID)
+                                    && node.child("productId").getValue(String.class).equals(item.getKey())) {
+                                favoriteRef.child(node.getKey()).removeValue().addOnSuccessListener(unused -> showSuccesDialog("Xoá sản phẩm khỏi yêu thích thành công!")).addOnFailureListener(e -> showWarningDialog("Xoá sản phẩm khỏi yêu thích thất bại!"));
+                                break;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+            else {
+                Favorite favorite = new Favorite();
+                favorite.setProductId(item.getKey());
+                favorite.setUserId(accountID);
+                favoriteRef.push().setValue(favorite).addOnSuccessListener(unused -> showSuccesDialog("Thêm sản phẩm vào yêu thích thành công!")).addOnFailureListener(e -> showWarningDialog("Thêm sản phẩm vào yêu thích thất bại!"));
+            }
+        } else {
+            // Xem tất cả bình luận
+        }
+    }
+
+    private int formatInt(String price) {
+        return Integer.parseInt(price.substring(0, price.length() - 2).replace(".", ""));
+    }
+
+    private void showWarningDialog(String notify) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(DetailProductActivity.this).inflate(
+                R.layout.layout_warning_dialog,
+                findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        title = view.findViewById(R.id.textTitle);
+        title.setText(R.string.title);
+        mess = view.findViewById(R.id.textMessage);
+        mess.setText(notify);
+        ((TextView) view.findViewById(R.id.buttonAction)).setText(getResources().getString(R.string.yes));
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    private void showSuccesDialog(String notify) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailProductActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(DetailProductActivity.this).inflate(
+                R.layout.layout_succes_dialog,
+                findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        title = view.findViewById(R.id.textTitle);
+        title.setText(R.string.title);
+        mess = view.findViewById(R.id.textMessage);
+        mess.setText(notify);
+        ((TextView) view.findViewById(R.id.buttonAction)).setText(getResources().getString(R.string.okay));
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setVisibility(View.GONE);
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+
+        handler.postDelayed(alertDialog::dismiss, 1500);
     }
 }

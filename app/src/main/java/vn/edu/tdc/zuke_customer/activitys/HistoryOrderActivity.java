@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,13 +34,14 @@ import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class HistoryOrderActivity extends AppCompatActivity {
+    Toolbar toolbar;
+    TextView subtitleAppbar;
+    ImageView buttonAction;
     String accountID = "";
     Handler handler = new Handler();
     RecyclerView recyclerView;
     ArrayList<Order> list;
     OrderAdapter adapter;
-    CustomBottomNavigationView customBottomNavigationView;
-    FloatingActionButton fab;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference orderRef = db.getReference("Order");
@@ -52,6 +56,16 @@ public class HistoryOrderActivity extends AppCompatActivity {
         intent = getIntent();
         accountID = intent.getStringExtra("accountID");
 
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleDHCT);
+        buttonAction = findViewById(R.id.buttonAction);
+        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_filter_alt_24));
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // Đổ dữ liệu recycleview:
         recyclerView = findViewById(R.id.list);
         recyclerView.setHasFixedSize(true);
@@ -61,6 +75,12 @@ public class HistoryOrderActivity extends AppCompatActivity {
         adapter.setItemClickListener(itemClickListener);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     // Khai báo và khởi tạo đối tượng itemClickListener

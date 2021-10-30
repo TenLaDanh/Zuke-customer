@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,8 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
     TextView title, mess;
     CustomBottomNavigationView customBottomNavigationView;
     Intent intent;
+    Toolbar toolbar;
+    TextView subtitleAppbar;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
@@ -55,6 +58,12 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_favorite);
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleDMSP);
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -71,6 +80,12 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         adapter.setItemClickListener(itemClick);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private final FavoriteAdapter.ItemClick itemClick = new FavoriteAdapter.ItemClick() {
@@ -174,6 +189,32 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
 
             }
         });
+    }
+
+    private void showWarningDialog(String notify) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FavoriteActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(FavoriteActivity.this).inflate(
+                R.layout.layout_warning_dialog,
+                findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        title = view.findViewById(R.id.textTitle);
+        title.setText(R.string.title);
+        mess = view.findViewById(R.id.textMessage);
+        mess.setText(notify);
+        ((TextView) view.findViewById(R.id.buttonAction)).setText(getResources().getString(R.string.yes));
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
     }
 
     private void showSuccesDialog(String notify) {

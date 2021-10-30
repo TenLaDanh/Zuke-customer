@@ -44,12 +44,34 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:paddingBottom="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/mCart"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="25dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_round_shopping_cart_24"
+            app:fabCustomSize="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <vn.edu.tdc.zuke_customer.CustomBottomNavigationView
+            android:id="@+id/customBottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
     <!-- Custom Navigation Drawer Start -->
     <LinearLayout
         android:id="@+id/navigation_layout"

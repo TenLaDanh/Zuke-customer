@@ -1,16 +1,20 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,27 +22,36 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.Customer;
 import vn.edu.tdc.zuke_customer.data_models.Order;
 
-public class ProfileScreenActivity extends AppCompatActivity implements View.OnClickListener{
+public class ProfileScreenActivity extends AppCompatActivity implements View.OnClickListener, NavigationBarView.OnItemSelectedListener{
     String accountID = "abc05684428156", userID = "";
     ImageView imgCustomer, imgType;
     TextView name, phone, donDM, donHT, donH, type;
     RelativeLayout lsDH, hoTro, gioiThieu, dangXuat, ttCaNhan;
+    private CustomBottomNavigationView customBottomNavigationView;
+    Intent intent;
+
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference accountRef = db.getReference("Account/" + accountID);
     DatabaseReference cusRef = db.getReference("Customer");
     DatabaseReference cusTypeRef = db.getReference("CustomerType");
     DatabaseReference orderRef = db.getReference("Order");
     int numDM, numHT, numH;
-    Intent intent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_profile);
+
+        // Bottom navigation:
+        customBottomNavigationView = findViewById(R.id.customBottomBar);
+        customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
+        customBottomNavigationView.setOnItemSelectedListener(this);
+        customBottomNavigationView.setSelectedItemId(R.id.mProfile);
 
         // Khởi tạo biến:
         imgCustomer = findViewById(R.id.profile);
@@ -169,7 +182,7 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
             intent = new Intent(ProfileScreenActivity.this, IntroduceAppActivity.class);
             startActivity(intent);
         } else if (v == dangXuat) {
-            intent = new Intent(ProfileScreenActivity.this, HistoryOrderActivity.class);
+            intent = new Intent(ProfileScreenActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         } else {
@@ -178,5 +191,40 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
             intent.putExtra("userID", userID);
             startActivity(intent);
         }
+    }
+
+    // Sự kiện click các item trong bottom navigation
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mHome:
+                intent = new Intent(ProfileScreenActivity.this, HomeScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCategory:
+                intent = new Intent(ProfileScreenActivity.this, CategoryActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCart:
+                intent = new Intent(ProfileScreenActivity.this, CartActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mProfile:
+                break;
+            case R.id.mFavorite:
+                intent = new Intent(ProfileScreenActivity.this, FavoriteActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                Toast.makeText(ProfileScreenActivity.this, "Vui lòng chọn chức năng khác", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

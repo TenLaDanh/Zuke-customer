@@ -1,19 +1,20 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.widget.AdapterView;
+import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,17 +23,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.Category1Adapter;
-import vn.edu.tdc.zuke_customer.adapters.CategoryAdapter;
 import vn.edu.tdc.zuke_customer.adapters.ManuProductAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Category;
 import vn.edu.tdc.zuke_customer.data_models.ManuProduct;
 import vn.edu.tdc.zuke_customer.data_models.Manufactures;
 import vn.edu.tdc.zuke_customer.data_models.Product;
-import vn.edu.tdc.zuke_customer.data_models.Rating;
 
-public class CategoryActivity extends Activity {
+public class CategoryActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
+    // Khai báo biến:
     RecyclerView rcvCate, rcvManu;
     ArrayList<Product> listProduct;
     ArrayList<Manufactures> listManu;
@@ -40,6 +41,11 @@ public class CategoryActivity extends Activity {
     ManuProductAdapter adapterManuProduct;
     Category1Adapter adapterCate;
     ArrayList<ManuProduct> listManuProduct;
+    private CustomBottomNavigationView customBottomNavigationView;
+    Intent intent;
+    Toolbar toolbar;
+    TextView subtitleAppbar;
+
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference proRef = db.getReference("Products");
     DatabaseReference manuRef = db.getReference("Manufactures");
@@ -50,6 +56,20 @@ public class CategoryActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_category);
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleDMSP);
+//        assert getSupportActionBar() != null;   //null check
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bottom navigation:
+        customBottomNavigationView = findViewById(R.id.customBottomBar);
+        customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
+        customBottomNavigationView.setOnItemSelectedListener(this);
+        customBottomNavigationView.setSelectedItemId(R.id.mCategory);
 
         // Khởi tạo biến:
         rcvCate = findViewById(R.id.rcvCate);
@@ -201,5 +221,40 @@ public class CategoryActivity extends Activity {
 
             }
         });
+    }
+
+    // Sự kiện click các item trong bottom navigation
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mHome:
+                intent = new Intent(CategoryActivity.this, HomeScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCategory:
+                break;
+            case R.id.mCart:
+                intent = new Intent(CategoryActivity.this, CartActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mProfile:
+                intent = new Intent(CategoryActivity.this, ProfileScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mFavorite:
+                intent = new Intent(CategoryActivity.this, FavoriteActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                Toast.makeText(CategoryActivity.this, "Vui lòng chọn chức năng khác", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

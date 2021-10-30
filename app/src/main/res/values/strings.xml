@@ -90,6 +90,7 @@
     <string name="answer9">Bạn hãy liên hệ với trực tiếp với chúng tôi hoặc qua hotline: 0123 345 567 chúng tôi luôn đảm bảo quyền lợi ưu tiên nhất cho bạn về chất lượng sản phẩm và dịch vụ.</string>
     <string name="question10">Chính sách cho khách hàng</string>
     <string name="answer10">Chúng tôi luôn nỗ lực mang đến sự hài lòng cho khách hàng bằng phong cách phục vụ tận tình, thấu hiểu và tinh tế. Với đội ngũ nhân viên tư vấn bán hàng chuyên nghiệp, các chuyên gia kĩ thuật trong ngành, Zuke đảm bảo cung cấp cho khách hàng những thông tin trung thực về sản phẩm cũng như những giải pháp tốt nhất về các vấn đề phát sinh xung quanh sản phẩm.</string>
+    <string name="titleDMSP">Danh mục sản phẩm</string>
 
     <string-array name="mau">
         <item>Màu 1</item>

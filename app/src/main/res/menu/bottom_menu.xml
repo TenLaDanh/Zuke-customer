@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_favorites"
+        android:enabled="true"
+        android:icon="@drawable/ic_round_home_24"
+        android:title="Page1"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_schedules"
+        android:enabled="true"
+        android:title="Page2"
+        android:icon="@drawable/ic_round_account_circle_24"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:enabled="true"
+        android:title=""
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_music"
+        android:enabled="true"
+        android:icon="@drawable/ic_round_favorite_24"
+        android:title="Page3"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_schedules1"
+        android:enabled="true"
+        android:title="Page4"
+        android:icon="@drawable/ic_round_account_circle_24"
+        app:showAsAction="ifRoom"/>
+</menu>

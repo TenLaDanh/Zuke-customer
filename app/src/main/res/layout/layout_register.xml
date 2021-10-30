@@ -71,7 +71,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextPhone"
                         style="@style/modifiedEditText"
-                        android:hint="@string/login_email_hint"
+                        android:hint="@string/login_phone_hint"
                         android:inputType="phone"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>

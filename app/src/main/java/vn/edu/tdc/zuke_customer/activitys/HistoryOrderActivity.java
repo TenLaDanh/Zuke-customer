@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.OrderAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Order;
@@ -34,6 +36,9 @@ public class HistoryOrderActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<Order> list;
     OrderAdapter adapter;
+    CustomBottomNavigationView customBottomNavigationView;
+    FloatingActionButton fab;
+
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference orderRef = db.getReference("Order");
     DatabaseReference ratingRef = db.getReference("Rating");

@@ -92,7 +92,8 @@ public class OrderRatingAdapter extends RecyclerView.Adapter<OrderRatingAdapter.
         holder.recyclerView.setAdapter(adapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         if (to.equals("read")) {
-            holder.ratingBar.setIsIndicator(false);
+            holder.ratingBar.setFocusable(false);
+            holder.ratingBar.setIsIndicator(true);
             holder.txtComment.setEnabled(false);
         }
         holder.ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> item.setRating((int) rating));

@@ -1,12 +1,15 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.FavoriteAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Cart;
@@ -30,13 +35,16 @@ import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.Favorite;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
-public class FavoriteActivity extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener{
     String accountID = "abc05684428156", cartID = "";
     boolean check = true;
     RecyclerView recyclerView;
     ArrayList<Favorite> list;
     FavoriteAdapter adapter;
     TextView title, mess;
+    CustomBottomNavigationView customBottomNavigationView;
+    Intent intent;
+
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
     DatabaseReference cartDetailRef = db.getReference("Cart_Detail");
@@ -46,7 +54,13 @@ public class FavoriteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_list);
+        setContentView(R.layout.layout_favorite);
+
+        // Bottom navigation:
+        customBottomNavigationView = findViewById(R.id.customBottomBar);
+        customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
+        customBottomNavigationView.setOnItemSelectedListener(this);
+        customBottomNavigationView.setSelectedItemId(R.id.mFavorite);
 
         //RecycleView
         recyclerView = findViewById(R.id.list);
@@ -183,5 +197,39 @@ public class FavoriteActivity extends AppCompatActivity {
         alertDialog.show();
 
         handler.postDelayed(alertDialog::dismiss, 1500);
+    }
+
+    // Sự kiện click các item trong bottom navigation
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mHome:
+                intent = new Intent(FavoriteActivity.this, HomeScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCategory:
+                intent = new Intent(FavoriteActivity.this, CategoryActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCart:
+                intent = new Intent(FavoriteActivity.this, CartActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mProfile:
+                intent = new Intent(FavoriteActivity.this, ProfileScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mFavorite:
+                break;
+            default:
+                Toast.makeText(FavoriteActivity.this, "Vui lòng chọn chức năng khác", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

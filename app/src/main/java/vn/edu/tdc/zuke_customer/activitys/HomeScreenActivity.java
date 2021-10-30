@@ -1,15 +1,23 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,6 +29,7 @@ import com.smarteist.autoimageslider.SliderView;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.BannerAdapter;
 import vn.edu.tdc.zuke_customer.adapters.CategoryAdapter;
@@ -30,8 +39,9 @@ import vn.edu.tdc.zuke_customer.data_models.Banner;
 import vn.edu.tdc.zuke_customer.data_models.Category;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
-public class HomeScreenActivity extends AppCompatActivity {
+public class HomeScreenActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     // Khai báo biến:
+    String accountID = "";
     RecyclerView recyclerCate, recyclerGoiY, recyclerMuaNhieu;
     ArrayList<Category> listCate;
     ArrayList<Product> listProductSold, listProductRating;
@@ -41,6 +51,8 @@ public class HomeScreenActivity extends AppCompatActivity {
     ProductAdapter productAdapterRating;
     BannerAdapter bannerAdapter;
     SliderView imgHomeSlider;
+    private CustomBottomNavigationView customBottomNavigationView;
+    Intent intent;
 
     Query querySortBySold, querySortBySuggestion, queryBanner;
     FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -53,6 +65,12 @@ public class HomeScreenActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
+
+        // Bottom navigation:
+        customBottomNavigationView = findViewById(R.id.customBottomBar);
+        customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
+        customBottomNavigationView.setOnItemSelectedListener(this);
+        customBottomNavigationView.getMenu().findItem(R.id.mHome).setChecked(true);
 
         // Khởi tạo biến:
         imgHomeSlider = findViewById(R.id.imageSlider);
@@ -91,6 +109,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         imgHomeSlider.setSliderAdapter(bannerAdapter);
     }
 
+    // Hàm lấy dữ liệu
     public void data() {
         // Danh sách khuyến mãi:
         queryBanner = banRef.limitToFirst(4);
@@ -175,5 +194,40 @@ public class HomeScreenActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Sự kiện click các item trong bottom navigation
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mHome:
+                break;
+            case R.id.mCategory:
+                intent = new Intent(HomeScreenActivity.this, CategoryActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mCart:
+                intent = new Intent(HomeScreenActivity.this, CartActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mProfile:
+                intent = new Intent(HomeScreenActivity.this, ProfileScreenActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            case R.id.mFavorite:
+                intent = new Intent(HomeScreenActivity.this, FavoriteActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+            default:
+                Toast.makeText(HomeScreenActivity.this, "Vui lòng chọn chức năng khác", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return true;
     }
 }

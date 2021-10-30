@@ -109,7 +109,7 @@ public class RatingActivity extends AppCompatActivity {
             alertDialog.dismiss();
             if(checkError() == 1) {
                 // Format ngày tạo rating
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                 Date date = new Date();
 
                 // Lưu rating

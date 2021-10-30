@@ -147,7 +147,9 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
 
         @Override
         public void detailProduct(Product product) {
-
+            intent = new Intent(FavoriteActivity.this, DetailProductActivity.class);
+            intent.putExtra("item", product);
+            startActivity(intent);
         }
     };
 

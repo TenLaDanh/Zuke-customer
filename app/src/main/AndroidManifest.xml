@@ -95,7 +95,10 @@
         <activity
             android:name=".activitys.DetailProductActivity"
             android:theme="@style/AppTheme.NoActionBar">
-
+        </activity>
+        <activity
+            android:name=".activitys.ListCommentProductActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
 

@@ -4,19 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +38,7 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class HomeScreenActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     // Khai báo biến:
+    Toolbar toolbar;
     String accountID = "";
     RecyclerView recyclerCate, recyclerGoiY, recyclerMuaNhieu;
     ArrayList<Category> listCate;
@@ -65,6 +63,10 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
+
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -92,6 +94,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         recyclerCate.setHasFixedSize(true);
         recyclerGoiY.setHasFixedSize(true);
         recyclerMuaNhieu.setHasFixedSize(true);
+        productAdapterRating.setItemClickListener(itemClick);
 
         // Đổ dữ liệu vào recyclerView:
         recyclerCate.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -108,6 +111,15 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         // Adding the Adapter to the ViewPager
         imgHomeSlider.setSliderAdapter(bannerAdapter);
     }
+
+    private final ProductAdapter.ItemClick itemClick = new ProductAdapter.ItemClick() {
+        @Override
+        public void getDetailProduct(Product item) {
+            intent = new Intent(HomeScreenActivity.this, DetailProductActivity.class);
+            intent.putExtra("item", item);
+            startActivity(intent);
+        }
+    };
 
     // Hàm lấy dữ liệu
     public void data() {

@@ -44,7 +44,7 @@ public class BannerAdapter extends SliderViewAdapter<BannerAdapter.SliderAdapter
         viewHolder.textViewDescription.setText(sliderItem.getName());
         // Load ảnh
         StorageReference imageRef = FirebaseStorage.getInstance().getReference("images/promocodes/" + sliderItem.getImage());
-        imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri.toString()).fit().into(viewHolder.imageViewBackground));
+        imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri).fit().into(viewHolder.imageViewBackground));
     }
 
     @Override

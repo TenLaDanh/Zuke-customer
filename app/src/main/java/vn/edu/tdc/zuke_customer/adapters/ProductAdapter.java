@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -33,11 +34,16 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
     private Context context;
     private ArrayList<Product> items;
+    ProductAdapter.ItemClick itemClick;
     DatabaseReference offerDetailRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
 
     public ProductAdapter(Context context, ArrayList<Product> items) {
         this.context = context;
         this.items = items;
+    }
+
+    public void setItemClickListener(ProductAdapter.ItemClick itemClickListener) {
+        this.itemClick = itemClickListener;
     }
 
     @NonNull
@@ -90,13 +96,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         } else {
             holder.itemRating.setVisibility(View.GONE);
         }
-
         //Đã bán:
         if (item.getSold() > 0) {
             holder.itemRatingAmount.setText(item.getSold() + " đã bán");
         } else {
             holder.itemRatingAmount.setVisibility(View.INVISIBLE);
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            if(itemClick != null) {
+                itemClick.getDetailProduct(item);
+            } else return;
+        });
     }
 
     private String formatPrice(int price) {
@@ -111,7 +122,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-
         private ImageView itemImage;
         private TextView itemTitle, itemPrice, itemPriceMain, itemRating, itemRatingAmount;
 
@@ -124,5 +134,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
             itemRating = view.findViewById(R.id.item_rating);
             itemRatingAmount = view.findViewById(R.id.item_rating_amount);
         }
+    }
+
+    public interface ItemClick {
+        void getDetailProduct(Product item);
     }
 }

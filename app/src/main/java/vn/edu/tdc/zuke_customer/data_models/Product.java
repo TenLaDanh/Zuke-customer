@@ -1,6 +1,9 @@
 package vn.edu.tdc.zuke_customer.data_models;
 
-public class Product {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Product implements Parcelable {
     //properties
     private String key;
     private String id;
@@ -14,6 +17,35 @@ public class Product {
     private int price;
     private int rating;
     private int status;
+
+    protected Product(Parcel in) {
+        key = in.readString();
+        id = in.readString();
+        name = in.readString();
+        category_id = in.readString();
+        image = in.readString();
+        manu_id = in.readString();
+        quantity = in.readInt();
+        description = in.readString();
+        import_price = in.readInt();
+        price = in.readInt();
+        rating = in.readInt();
+        status = in.readInt();
+        sold = in.readInt();
+        created_at = in.readString();
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 
     public int getStatus() {
         return status;
@@ -155,5 +187,28 @@ public class Product {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(key);
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(category_id);
+        dest.writeString(image);
+        dest.writeString(manu_id);
+        dest.writeInt(quantity);
+        dest.writeString(description);
+        dest.writeInt(import_price);
+        dest.writeInt(price);
+        dest.writeInt(rating);
+        dest.writeInt(status);
+        dest.writeInt(sold);
+        dest.writeString(created_at);
     }
 }

@@ -337,6 +337,12 @@ public class PaymentActivity extends AppCompatActivity {
 
     // Get data:
     private void data() {
+        txtTotal.setText(formatPrice(0));
+        txtDiscount.setText(formatPrice(0));
+        txtTransportFee.setText(formatPrice(0));
+        txtRemain.setText(formatPrice(0));
+
+
         cartRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

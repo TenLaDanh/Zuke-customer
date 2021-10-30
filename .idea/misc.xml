@@ -63,15 +63,22 @@
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/custom_info_contents.xml" value="0.1" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/custom_info_window.xml" value="0.1712962962962963" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_indecrease_button.xml" value="0.2" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_notification.xml" value="0.16" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_cart.xml" value="0.22" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_goiy.xml" value="0.1" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_order.xml" value="0.25" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_change_password.xml" value="0.22" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_detail_order.xml" value="0.10208333333333333" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_facebook_auth.xml" value="0.20416666666666666" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_forgot_password.xml" value="0.25" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_forgot_password_change.xml" value="0.25" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_list.xml" value="0.20416666666666666" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_list_cart.xml" value="0.18" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_login.xml" value="0.20416666666666666" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_map_activity.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_otp_confirm.xml" value="0.25" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_payment.xml" value="0.25" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_register.xml" value="0.33" />
         <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_warning_dialog.xml" value="0.1" />
       </map>
     </option>

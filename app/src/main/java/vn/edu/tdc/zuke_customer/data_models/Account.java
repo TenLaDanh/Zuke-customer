@@ -1,21 +1,37 @@
 package vn.edu.tdc.zuke_customer.data_models;
 
-public class Account {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.HashMap;
+
+public class Account implements Parcelable {
     //Properties
     private int id;
     private String username;
     private String password;
     private int role_id;
     private String status;
-    private String image;
 
-    public String getImage() {
-        return image;
+    protected Account(Parcel in) {
+        id = in.readInt();
+        username = in.readString();
+        password = in.readString();
+        role_id = in.readInt();
+        status = in.readString();
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
+    public static final Creator<Account> CREATOR = new Creator<Account>() {
+        @Override
+        public Account createFromParcel(Parcel in) {
+            return new Account(in);
+        }
+
+        @Override
+        public Account[] newArray(int size) {
+            return new Account[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -57,13 +73,12 @@ public class Account {
         this.status = status;
     }
 
-    public Account(int id, String username, String password, int role_id, String status, String image) {
-        this.id = id;
+    public Account( String username, String password, int role_id, String status) {
+
         this.username = username;
         this.password = password;
         this.role_id = role_id;
         this.status = status;
-        this.image = image;
     }
 
     public Account() {
@@ -71,12 +86,28 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role_id=" + role_id +
-                ", status='" + status + '\'' +
-                '}';
+        return username;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(username);
+        dest.writeString(password);
+        dest.writeInt(role_id);
+        dest.writeString(status);
+    }
+    public HashMap<String,Object> toMap(){
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("username",username);
+        map.put("password",password);
+        map.put("role_id",role_id);
+        map.put("status",status);
+        return map;
     }
 }

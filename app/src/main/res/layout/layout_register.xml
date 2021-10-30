@@ -57,7 +57,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextName"
                         style="@style/modifiedEditText"
-                        android:hint="@string/login_username_hint"
+                        android:hint="Họ và tên"
                         android:inputType="textPersonName"
                         android:maxLines="1"
                         tools:ignore="Autofill" />
@@ -71,7 +71,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/editTextPhone"
                         style="@style/modifiedEditText"
-                        android:hint="@string/login_email_hint"
+                        android:hint="Số điện thoại"
                         android:inputType="phone"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
@@ -125,7 +125,7 @@
         android:layout_marginEnd="11dp"
         android:layout_marginBottom="30dp"
         android:adjustViewBounds="false"
+        android:onClick="onLogin"
         android:src="@drawable/ic_back_img"
-        tools:ignore="ContentDescription"
-        android:onClick="onLogin"/>
+        tools:ignore="ContentDescription" />
 </RelativeLayout>

@@ -64,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <EditText
+                        android:id="@+id/edt1"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -75,6 +76,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
                     <EditText
+                        android:id="@+id/edt2"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -86,6 +88,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
                     <EditText
+                        android:id="@+id/edt3"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -97,6 +100,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
                     <EditText
+                        android:id="@+id/edt4"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -108,6 +112,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
                     <EditText
+                        android:id="@+id/edt5"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -119,6 +124,7 @@
                         android:textSize="24sp"
                         android:textStyle="bold"/>
                     <EditText
+                        android:id="@+id/edt6"
                         android:layout_width="40dp"
                         android:layout_height="45dp"
                         android:gravity="center"
@@ -133,7 +139,7 @@
 
 
                 <br.com.simplepass.loadingbutton.customViews.CircularProgressButton
-                    android:id="@+id/cirRegisterButton"
+                    android:id="@+id/btnSubmit"
                     style="@style/loginButton"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/loginViewsMargin"
@@ -145,6 +151,7 @@
                     android:onClick="onChange"/>
 
                 <TextView
+                    android:id="@+id/btnSentAgain"
                     style="@style/parent"
                     android:layout_marginTop="@dimen/loginViewsMargin"
                     android:text="@string/resend_otp"

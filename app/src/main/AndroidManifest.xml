@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application
+        android:name=".ZukeApplication"
         android:allowBackup="true"
         android:icon="@drawable/app"
         android:label="@string/app_name"
@@ -17,6 +18,13 @@
         android:theme="@style/AppTheme.DarkActionBar"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+        <service
+            android:name=".FCM.FirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
@@ -29,7 +37,10 @@
         <activity
             android:name=".activitys.LoginActivity"
             android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activitys.FacebookAuthActivity"
@@ -38,23 +49,32 @@
         </activity>
         <activity
             android:name=".activitys.RegisterActivity"
-            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".activitys.ForgotPasswordActivity"
-            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".activitys.OTPVerificationActivity"
-            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
+            android:theme="@style/AppTheme.DarkActionBar.NoActionBar" >
+
+        </activity>
+
         <activity
             android:name=".activitys.ForgotPasswordChangeActivity"
             android:theme="@style/AppTheme.DarkActionBar.NoActionBar" />
         <activity
             android:name=".activitys.HomeScreenActivity"
             android:theme="@style/AppTheme.DarkActionBar">
+
         </activity>
         <activity
             android:name=".activitys.ProfileScreenActivity"
             android:theme="@style/AppTheme.DarkActionBar">
+
         </activity>
         <activity
             android:name=".activitys.EditProfileActivity"
@@ -80,10 +100,7 @@
         <activity
             android:name=".activitys.PaymentActivity"
             android:theme="@style/AppTheme.DarkActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity
@@ -97,6 +114,7 @@
         <activity
             android:name=".activitys.NotificationActivity"
             android:theme="@style/AppTheme.DarkActionBar">
+
         </activity>
         <activity
             android:name=".activitys.DetailProductActivity"

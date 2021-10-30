@@ -84,6 +84,15 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/layout/text_input_pass.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/menu/bottom_menu.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/Zuke-Customer/app/src/main/res/menu/bottom_nav_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/appbar_2.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/item_product_cart.xml" value="0.16574074074074074" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_category.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_detail_profile.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_list.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_list_cart.xml" value="0.18" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_login.xml" value="0.1" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_payment.xml" value="0.18" />
+        <entry key="..\:/Zuke-customer/app/src/main/res/layout/layout_search.xml" value="0.21" />
       </map>
     </option>
   </component>

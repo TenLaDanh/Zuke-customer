@@ -91,4 +91,38 @@
     <string name="thanks">Cảm ơn những đánh giá từ bạn. Chúng tôi sẽ tích cực hơn nữa để làm hài lòng những khách hàng đã yêu mến sử dụng dịch vụ của chúng tôi!</string>
     <string name="title11">Chi tiết hoá đơn</string>
     <string name="message_service_token">AAAA0auJzuI:APA91bEld4l6eHpB7gbWus6Qe8lRZtI68egF107W-Tejx02IqwBirpYSx3Hrizsh9m5gC8I-CpGKI-86TmMfWnSQ8v4g-h4gvoKLtidMIRGSAfrM0wb49x29abYWWcNUQ8jlK3CMBj7p</string>
+
+    <!-- Support -->
+    <string name="question1">Không thể đăng nhập?</string>
+    <string name="answer1">Bạn có thể lấy lại quyền truy cập tài khoản bằng cách chọn vào quên mật khẩu tại màn hình đăng nhập, sau đó tiến hành nhập số điện thoại và xác nhận mã OTP đã được gửi đến. Nếu vẫn không thể đăng nhập vui lòng liên hệ ngay với chúng tôi qua hotline: 0123 345 567</string>
+    <string name="question2">Đổi mật khẩu?</string>
+    <string name="answer2">Tại màn hình cá nhân, chọn vào ">" tại thông tin tài khoản rồi chọn vào "Thay đổi mật khẩu".</string>
+    <string name="question3">Sản phẩm bị lỗi?</string>
+    <string name="answer3">Nếu sản phẩm của bạn bị lỗi và vẫn còn trong thời hạn bảo hành thì mong bạn hãy đưa món đồ đó đến cửa hàng của chúng tôi hoặc liên hệ qua hotline: 0123 345 567 để được tư vấn rõ nhất về các bước "hoàn trả - bảo hành" sản phẩm.</string>
+    <string name="question4">Đơn hàng vẫn chưa được gửi tới?</string>
+    <string name="answer4">Chúng tôi sẽ gửi đơn hàng đến sớm nhất cho các bạn. Hoặc bạn có thể liên hệ qua hotline: 0123 345 567 để được tư vấn viên giải đáp kĩ càng nhất về vấn đề đơn hàng của bạn.</string>
+    <string name="question5">Hoàn trả đơn hàng?</string>
+    <string name="answer5">Chúng tôi có chính sách hoàn trả đơn hàng miễn phí 100% trong 3 ngày trừ trường hợp bị hư hỏng, thiệt hại từ phía cá nhân khách hàng sử dụng.</string>
+    <string name="question6">Chính sách khuyến mãi</string>
+    <string name="answer6">Chúng tôi luôn có những chính sách khuyễn mãi hấp dẫn nhằm tri ân khách hàng đã tin tưởng và ửng hộ Zuke như: Ưu đãi khách hàng theo sinh nhật, Ưu đãi khách hàng theo loại khách hàng,... Mong bạn hãy tiếp tục theo dõi và ủng hộ chúng tôi. Xin cảm ơn!</string>
+    <string name="question7">Phương thức thanh toán</string>
+    <string name="answer7">Chúng tôi đảm bảo phương thức thanh toán luôn an toàn, đó là giao dịch trực tiếp khi bạn nhận hàng.</string>
+    <string name="question8">Khoá tài khoản?</string>
+    <string name="answer8">Nếu bạn vi phạm các quy tắc quá nhiều chúng tôi sẽ khoá tài khoản của bạn. Ví dụ vi phạm: huỷ đơn hàng quá nhiều lần, cố tình gây rối, phá hoại ứng dụng,... Nếu trong trường hợp bạn không vi phạm mà bị khoá thì hãy liên hệ với chúng tôi.</string>
+    <string name="question9">Khiếu nại sản phẩm?</string>
+    <string name="answer9">Bạn hãy liên hệ với trực tiếp với chúng tôi hoặc qua hotline: 0123 345 567 chúng tôi luôn đảm bảo quyền lợi ưu tiên nhất cho bạn về chất lượng sản phẩm và dịch vụ.</string>
+    <string name="question10">Chính sách cho khách hàng</string>
+    <string name="answer10">Chúng tôi luôn nỗ lực mang đến sự hài lòng cho khách hàng bằng phong cách phục vụ tận tình, thấu hiểu và tinh tế. Với đội ngũ nhân viên tư vấn bán hàng chuyên nghiệp, các chuyên gia kĩ thuật trong ngành, Zuke đảm bảo cung cấp cho khách hàng những thông tin trung thực về sản phẩm cũng như những giải pháp tốt nhất về các vấn đề phát sinh xung quanh sản phẩm.</string>
+
+
+    <string name="dob">Ngày sinh</string>
+    <string name="titleDMSP">Danh mục sản phẩm</string>
+    <string name="titleDHCT">Đơn hàng của tôi</string>
+    <string name="titleDGSP">Đánh giá sản phẩm</string>
+    <string name="titleHT">Hỗ trợ</string>
+    <string name="titleCSTTCN">Chỉnh sửa thông tin cá nhân</string>
+    <string name="titleTDMK">Thay đổi mật khẩu</string>
+    <string name="titleDSYT">Danh sách yêu thích</string>
+    <string name="titleTB">Thông báo</string>
+    <string name="titleGH">Giỏ hàng</string>
 </resources>

@@ -19,6 +19,10 @@
         <activity
             android:name=".activitys.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activitys.RegisterActivity"
@@ -38,10 +42,7 @@
         <activity
             android:name=".activitys.HomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".activitys.ProfileScreenActivity"
@@ -73,7 +74,6 @@
             android:name=".activitys.PaymentActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
 
         <activity
             android:name=".activitys.SearchActivity"

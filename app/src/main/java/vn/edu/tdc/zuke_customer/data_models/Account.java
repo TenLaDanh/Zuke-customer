@@ -14,7 +14,6 @@ public class Account implements Parcelable {
     private String status;
 
     protected Account(Parcel in) {
-        id = in.readInt();
         username = in.readString();
         password = in.readString();
         role_id = in.readInt();
@@ -73,8 +72,7 @@ public class Account implements Parcelable {
         this.status = status;
     }
 
-    public Account( String username, String password, int role_id, String status) {
-
+    public Account(String username, String password, int role_id, String status) {
         this.username = username;
         this.password = password;
         this.role_id = role_id;
@@ -96,12 +94,12 @@ public class Account implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(username);
         dest.writeString(password);
         dest.writeInt(role_id);
         dest.writeString(status);
     }
+    
     public HashMap<String,Object> toMap(){
         HashMap<String,Object> map = new HashMap<>();
         map.put("username",username);

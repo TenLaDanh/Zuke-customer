@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +43,11 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
     RecyclerView recyclerView;
     ArrayList<Favorite> list;
     FavoriteAdapter adapter;
-    TextView title, mess;
+    TextView title, mess, subtitleAppbar;
     CustomBottomNavigationView customBottomNavigationView;
     Intent intent;
     Toolbar toolbar;
-    TextView subtitleAppbar;
+    ImageView buttonAction;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
@@ -63,13 +64,15 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
-        subtitleAppbar.setText(R.string.titleDMSP);
+        subtitleAppbar.setText(R.string.titleDSYT);
+        buttonAction = findViewById(R.id.buttonAction);
+        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
         customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
         customBottomNavigationView.setOnItemSelectedListener(this);
-        customBottomNavigationView.setSelectedItemId(R.id.mFavorite);
+        customBottomNavigationView.getMenu().findItem(R.id.mFavorite).setChecked(true);
 
         //RecycleView
         recyclerView = findViewById(R.id.list);
@@ -243,6 +246,7 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
     }
 
     // Sự kiện click các item trong bottom navigation
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -260,7 +264,6 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
             case R.id.mCart:
                 intent = new Intent(FavoriteActivity.this, CartActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.mProfile:
                 intent = new Intent(FavoriteActivity.this, ProfileScreenActivity.class);

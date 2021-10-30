@@ -2,10 +2,13 @@ package vn.edu.tdc.zuke_customer.activitys;
 
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,7 +32,10 @@ import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class CartActivity extends AppCompatActivity {
-    String accountID = "-MmcLcAy0lUBiYMA5E8c";
+    Toolbar toolbar;
+    TextView subtitleAppbar;
+    ImageView buttonAction;
+    String accountID = "abc05684428156";
     RecyclerView cartRecycleView;
     Button btnPayment;
     ArrayList<CartDetail> listCart;
@@ -45,8 +51,18 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_list_cart);
 
-        btnPayment = findViewById(R.id.buttonThanhToan);
+        // Toolbar:
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        subtitleAppbar = findViewById(R.id.subtitleAppbar);
+        subtitleAppbar.setText(R.string.titleGH);
+        buttonAction = findViewById(R.id.buttonAction);
+        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
+        assert getSupportActionBar() != null;   //null check
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Khởi tạo biến:
+        btnPayment = findViewById(R.id.buttonThanhToan);
         cartRecycleView = findViewById(R.id.listProduct);
         cartRecycleView.setHasFixedSize(true);
         listCart = new ArrayList<>();
@@ -61,6 +77,13 @@ public class CartActivity extends AppCompatActivity {
         cartRecycleView.addItemDecoration(itemDecoration);
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    // Lấy dữ liệu:
     private void data() {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -91,8 +114,8 @@ public class CartActivity extends AppCompatActivity {
 
                             }
                         });
-
                     }
+                    break;
                 }
             }
 
@@ -101,7 +124,6 @@ public class CartActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private CartDetailAdapter.ItemClickListener itemClickListener = new CartDetailAdapter.ItemClickListener() {
@@ -169,7 +191,7 @@ public class CartActivity extends AppCompatActivity {
 
         @Override
         public void delete(String id) {
-            db.getReference("Cart_Detail").child(id).removeValue();
+            detailRef.child(id).removeValue();
             updateCartTotal(id);
         }
     };
@@ -193,7 +215,7 @@ public class CartActivity extends AppCompatActivity {
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("accountID", accountID);
                 map.put("total", total);
-                db.getReference("Cart").child(cartID).updateChildren(map);
+                ref.child(cartID).updateChildren(map);
             }
 
             @Override

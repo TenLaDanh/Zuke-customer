@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
     Intent intent;
     Toolbar toolbar;
     TextView subtitleAppbar;
+    ImageView buttonAction;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference proRef = db.getReference("Products");
@@ -63,12 +65,14 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         setSupportActionBar(toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
         subtitleAppbar.setText(R.string.titleDMSP);
+        buttonAction = findViewById(R.id.buttonAction);
+        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
         customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
         customBottomNavigationView.setOnItemSelectedListener(this);
-        customBottomNavigationView.setSelectedItemId(R.id.mCategory);
+        customBottomNavigationView.getMenu().findItem(R.id.mCategory).setChecked(true);
 
         // Khởi tạo biến:
         rcvCate = findViewById(R.id.rcvCate);
@@ -238,7 +242,6 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
             case R.id.mCart:
                 intent = new Intent(CategoryActivity.this, CartActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.mProfile:
                 intent = new Intent(CategoryActivity.this, ProfileScreenActivity.class);

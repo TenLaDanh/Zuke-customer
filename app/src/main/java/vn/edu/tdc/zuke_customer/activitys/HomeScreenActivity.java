@@ -95,6 +95,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         recyclerGoiY.setHasFixedSize(true);
         recyclerMuaNhieu.setHasFixedSize(true);
         productAdapterRating.setItemClickListener(itemClick);
+        productAdapterSold.setItemClickListener(itemClick1);
 
         // Đổ dữ liệu vào recyclerView:
         recyclerCate.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -233,7 +234,6 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
             case R.id.mCart:
                 intent = new Intent(HomeScreenActivity.this, CartActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.mProfile:
                 intent = new Intent(HomeScreenActivity.this, ProfileScreenActivity.class);

@@ -51,7 +51,7 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
         customBottomNavigationView = findViewById(R.id.customBottomBar);
         customBottomNavigationView.inflateMenu(R.menu.bottom_nav_menu);
         customBottomNavigationView.setOnItemSelectedListener(this);
-        customBottomNavigationView.setSelectedItemId(R.id.mProfile);
+        customBottomNavigationView.getMenu().findItem(R.id.mProfile).setChecked(true);
 
         // Khởi tạo biến:
         imgCustomer = findViewById(R.id.profile);
@@ -212,7 +212,6 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
             case R.id.mCart:
                 intent = new Intent(ProfileScreenActivity.this, CartActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.mProfile:
                 break;

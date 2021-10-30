@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.text.Editable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +37,8 @@ import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.ViewHolder> {
-    private Context context;
-    private ArrayList<CartDetail> list;
+    Context context;
+    ArrayList<CartDetail> list;
     ItemClickListener itemClickListener;
     DatabaseReference proRef = FirebaseDatabase.getInstance().getReference("Products");
     DatabaseReference promoRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
@@ -126,26 +124,23 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
 
             }
         });
-        holder.onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(itemClickListener != null) {
-                    int value = Integer.parseInt(String.valueOf(holder.edtValue.getText()));
-                    if (v == holder.btnAdd) {
-                        value++;
-                        holder.edtValue.setText(String.valueOf(value));
-                        itemClickListener.changeQuantity(item, value);
-                    }
-                    if (v == holder.btnMinus) {
-                        value--;
-                        holder.edtValue.setText(String.valueOf(value));
-                        itemClickListener.changeQuantity(item, value);
-                    }
-                    if (v == holder.cardView) itemClickListener.delete(item.getKey());
-
-                } else {
-                    return;
+        holder.onClickListener = v -> {
+            if(itemClickListener != null) {
+                int value = Integer.parseInt(String.valueOf(holder.edtValue.getText()));
+                if (v == holder.btnAdd) {
+                    value++;
+                    holder.edtValue.setText(String.valueOf(value));
+                    itemClickListener.changeQuantity(item, value);
                 }
+                if (v == holder.btnMinus) {
+                    value--;
+                    holder.edtValue.setText(String.valueOf(value));
+                    itemClickListener.changeQuantity(item, value);
+                }
+                if (v == holder.cardView) itemClickListener.delete(item.getKey());
+
+            } else {
+                return;
             }
         };
         viewBinderHelper.bind(holder.swipeRevealLayout, item.getKey());
@@ -159,10 +154,10 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         SwipeRevealLayout swipeRevealLayout;
         CardView cardView;
-        private ImageView itemImage;
-        private TextView itemName, itemPrice, itemPriceDiscount;
-        private Button btnAdd,btnMinus;
-        private EditText edtValue;
+        ImageView itemImage;
+        TextView itemName, itemPrice, itemPriceDiscount;
+        Button btnAdd,btnMinus;
+        EditText edtValue;
         View.OnClickListener onClickListener;
 
         public ViewHolder(View view) {

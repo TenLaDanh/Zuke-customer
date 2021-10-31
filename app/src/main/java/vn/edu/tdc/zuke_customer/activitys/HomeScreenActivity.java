@@ -3,11 +3,18 @@ package vn.edu.tdc.zuke_customer.activitys;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +36,9 @@ import com.smarteist.autoimageslider.SliderView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import vn.edu.tdc.zuke_customer.CustomBottomNavigationView;
 import vn.edu.tdc.zuke_customer.R;
@@ -54,7 +64,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
     ProductAdapter productAdapterRating;
     BannerAdapter bannerAdapter;
     SliderView imgHomeSlider;
-    SearchView searchView;
+    AutoCompleteTextView searchView;
     private CustomBottomNavigationView customBottomNavigationView;
     Intent intent;
 
@@ -73,7 +83,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         // Nhận dữ liệu từ intent:
         intent = getIntent();
         if (intent.getStringExtra("accountID") != null) {
-            accountID = intent.getStringExtra("accountID");
+            //accountID = intent.getStringExtra("accountID");
         }
 
         // Toolbar:
@@ -81,28 +91,11 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         setSupportActionBar(toolbar);
         buttonAction = findViewById(R.id.buttonAction);
         searchView = findViewById(R.id.searchView);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                intent = new Intent(HomeScreenActivity.this, SearchActivity.class);
-                intent.putExtra("query", query);
-                intent.putExtra("accountID", accountID);
-                startActivity(intent);
-                return false;
-            }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        buttonAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent = new Intent(HomeScreenActivity.this, NotificationActivity.class);
-                intent.putExtra("accountID", accountID);
-                startActivity(intent);
-            }
+        buttonAction.setOnClickListener(v -> {
+            intent = new Intent(HomeScreenActivity.this, NotificationActivity.class);
+            intent.putExtra("accountID", accountID);
+            startActivity(intent);
         });
 
         // Bottom navigation:
@@ -148,6 +141,52 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         bannerAdapter = new BannerAdapter(this, listBanner);
         // Adding the Adapter to the ViewPager
         imgHomeSlider.setSliderAdapter(bannerAdapter);
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                intent = new Intent(HomeScreenActivity.this, SearchActivity.class);
+                intent.putExtra("query", searchView.getText().toString());
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+                checkIsSuggesstion();
+            }
+            return true;
+        });
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                final ArrayAdapter<String> autoComplete = new ArrayAdapter<String>(HomeScreenActivity.this, android.R.layout.simple_list_item_1);
+                FirebaseDatabase.getInstance().getReference().
+                        child("AutocompleteSuggesstion").orderByChild("userId").equalTo(accountID).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot suggestionSnapshot : snapshot.getChildren()) {
+                                String suggestion = suggestionSnapshot.child("suggestion").getValue(String.class);
+                                autoComplete.add(suggestion);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                searchView.setAdapter(autoComplete);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private final ProductAdapter.ItemClick itemClick = new ProductAdapter.ItemClick() {
@@ -255,6 +294,39 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
 
             }
         });
+
+
+    }
+
+    private void checkIsSuggesstion() {
+        FirebaseDatabase.getInstance().getReference().child("AutocompleteSuggesstion").addValueEventListener(new ValueEventListener() {
+            boolean processDone = false;
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot suggestionSnapshot : snapshot.getChildren()) {
+                    String suggestion = suggestionSnapshot.child("suggestion").getValue(String.class);
+                    String userId = suggestionSnapshot.child("userId").getValue(String.class);
+                    if (searchView.getText().toString().toLowerCase().trim().contains(suggestion.toLowerCase())
+                            && accountID.equals(userId)
+                            && !processDone) {
+                        processDone = true;
+                    }
+                }
+                if (!processDone) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("userId", accountID);
+                    map.put("suggestion", searchView.getText().toString());
+                    FirebaseDatabase.getInstance().getReference().child("AutocompleteSuggesstion").push().setValue(map);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     // Sự kiện click các item trong bottom navigation

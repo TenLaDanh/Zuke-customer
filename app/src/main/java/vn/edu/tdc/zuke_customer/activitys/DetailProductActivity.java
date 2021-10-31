@@ -89,7 +89,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
-        subtitleAppbar.setText(R.string.titleDMSP);
+        subtitleAppbar.setText(R.string.titleCTSP);
         assert getSupportActionBar() != null;   //null check
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -152,7 +152,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri).fit().into(imgProduct));
 
             //Giá
-            offerDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            offerDetailRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int maxSale = 0;
@@ -204,6 +204,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot node : snapshot.getChildren()) {
+                        Log.d("TAG", "onDataChange: "+node.child("userId").getValue(String.class));
                         if (node.child("userId").getValue(String.class).equals(accountID)
                                 && node.child("productId").getValue(String.class).equals(item.getKey())) {
                             button_favorite.setChecked(true);

@@ -68,7 +68,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                         //Tên
                         holder.itemTitle.setText(product.getName());
                         //Giá
-                        offerDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        offerDetailRef.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 int maxSale = 0;
@@ -81,6 +81,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                                     }
                                 }
                                 if (maxSale != 0) {
+                                    holder.itemPriceMain.setVisibility(View.VISIBLE);
                                     int discount = product.getPrice() / 100 * (100 - maxSale);
                                     holder.itemPrice.setText(formatPrice(discount));
                                     holder.itemPriceMain.setText(formatPrice(product.getPrice()));

@@ -56,7 +56,7 @@ public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHo
         StorageReference imageRef = FirebaseStorage.getInstance().getReference("images/products/" + item.getName() + "/" + item.getImage());
         imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri.toString()).fit().into(holder.itemImage));
         //Giá
-        offerDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        offerDetailRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int maxSale = 0;
@@ -69,6 +69,7 @@ public class Product2Adapter extends RecyclerView.Adapter<Product2Adapter.ViewHo
                     }
                 }
                 if (maxSale != 0) {
+                    holder.itemPriceMain.setVisibility(View.VISIBLE);
                     int discount = item.getPrice() / 100 * (100 - maxSale);
                     holder.itemPrice.setText(formatPrice(discount));
                     holder.itemPriceMain.setText(formatPrice(item.getPrice()));

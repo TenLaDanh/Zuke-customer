@@ -97,7 +97,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this,PaymentActivity.class);
-                intent.putExtra("address",address);
+                intent.putExtra("address", address);
                 startActivity(intent);
             }
         });

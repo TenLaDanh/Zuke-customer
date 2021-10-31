@@ -235,7 +235,6 @@ public class OTPVerificationActivity extends AppCompatActivity {
                             FirebaseUser user = task.getResult().getUser();
                             // Update UI
                             if(type.equals("regis")){
-
                                 //lưu tài khoản vào database
                                 DatabaseReference accountRef = FirebaseDatabase.getInstance().getReference("Account");
                                 DatabaseReference childRef = accountRef.push();
@@ -249,6 +248,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
                                 customer.setName(name);
                                 customer.setAccountID(childRef.getKey());
                                 customer.setDob("");
+                                customer.setEmail("");
                                 customer.setType_id("Type");
                                 DatabaseReference customerRef = FirebaseDatabase.getInstance().getReference("Customer");
                                 customerRef.push().setValue(customer);

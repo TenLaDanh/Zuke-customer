@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.chauthai.swipereveallayout.ViewBinderHelper;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -54,6 +55,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         Date now = new Date();
         holder.created_at.setText(timeDiff(item.getCreated_at(), now));
+        if(!item.getImage().equals("")) Picasso.get().load(item.getImage()).fit().into(holder.itemImage);
 
         viewBinderHelper.bind(holder.swipeRevealLayout, item.getKey());
         holder.cardView.setOnClickListener(v -> {

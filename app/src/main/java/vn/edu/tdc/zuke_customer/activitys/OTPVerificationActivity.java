@@ -40,13 +40,14 @@ import vn.edu.tdc.zuke_customer.data_models.Account;
 import vn.edu.tdc.zuke_customer.data_models.Customer;
 
 public class OTPVerificationActivity extends AppCompatActivity {
-    CircularProgressButton btnSubmit ;
-    EditText edt1,edt2,edt3,edt4,edt5,edt6;
+    CircularProgressButton btnSubmit;
+    EditText edt1, edt2, edt3, edt4, edt5, edt6;
     TextView btnSentAgain;
-    String phoneNumber,verification_id,type,name;
+    String phoneNumber, verification_id, type, name;
     FirebaseAuth mAuth;
     PhoneAuthProvider.ForceResendingToken token;
     Account account;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,19 +55,10 @@ public class OTPVerificationActivity extends AppCompatActivity {
         changeStatusBarColor();
 
         UIinit();
-        btnSentAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickSentOTPAgain();
-            }
-        });
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String otp = String.valueOf(edt1.getText()).concat(String.valueOf(edt2.getText()).concat(String.valueOf(edt3.getText()).concat(String.valueOf(edt4.getText()).concat(String.valueOf(edt5.getText()).concat(String.valueOf(edt6.getText()))))));
-
-                onClickSubmit(otp);
-            }
+        btnSentAgain.setOnClickListener(v -> onClickSentOTPAgain());
+        btnSubmit.setOnClickListener(v -> {
+            String otp = String.valueOf(edt1.getText()).concat(String.valueOf(edt2.getText()).concat(String.valueOf(edt3.getText()).concat(String.valueOf(edt4.getText()).concat(String.valueOf(edt5.getText()).concat(String.valueOf(edt6.getText()))))));
+            onClickSubmit(otp);
         });
         edt1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -81,7 +73,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     edt2.requestFocus();
                 }
             }
@@ -99,7 +91,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     edt3.requestFocus();
                 }
             }
@@ -117,7 +109,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     edt4.requestFocus();
                 }
             }
@@ -135,7 +127,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     edt5.requestFocus();
                 }
             }
@@ -153,7 +145,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0){
+                if (s.length() > 0) {
                     edt6.requestFocus();
                 }
             }
@@ -174,7 +166,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
         phoneNumber = getIntent().getStringExtra("phone_number");
         verification_id = getIntent().getStringExtra("verification_id");
         type = getIntent().getStringExtra("type");
-        if(type.equals("regis")){
+        if (type.equals("regis")) {
             account = getIntent().getParcelableExtra("account");
             name = getIntent().getStringExtra("name");
         }
@@ -209,21 +201,22 @@ public class OTPVerificationActivity extends AppCompatActivity {
     }
 
     private void moveHomeScreen(String accountID) {
-        Intent intent = new Intent(OTPVerificationActivity.this,HomeScreenActivity.class);
-        intent.putExtra("accountID",accountID);
+        Intent intent = new Intent(OTPVerificationActivity.this, HomeScreenActivity.class);
+        intent.putExtra("accountID", accountID);
         startActivity(intent);
+        finish();
     }
 
-    private void onClickSubmit(String otp){
-        if(otp.length() != 6){
+    private void onClickSubmit(String otp) {
+        if (otp.length() != 6) {
             showWarningDialog("mã OTP không hợp lệ");
-        }
-        else {
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verification_id,otp);
+        } else {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verification_id, otp);
             signInWithPhoneAuthCredential(credential);
         }
 
     }
+
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -234,7 +227,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
 
                             FirebaseUser user = task.getResult().getUser();
                             // Update UI
-                            if(type.equals("regis")){
+                            if (type.equals("regis")) {
                                 //lưu tài khoản vào database
                                 DatabaseReference accountRef = FirebaseDatabase.getInstance().getReference("Account");
                                 DatabaseReference childRef = accountRef.push();
@@ -255,7 +248,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
                                 //back to home
                                 moveHomeScreen(childRef.getKey());
                             }
-                            if(type.equals("forgot")){
+                            if (type.equals("forgot")) {
                                 moveChangePasswordScreen();
                             }
                         } else {
@@ -268,6 +261,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
                     }
                 });
     }
+
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -277,19 +271,20 @@ public class OTPVerificationActivity extends AppCompatActivity {
         }
     }
 
-    public void onBack(View view){
+    public void onBack(View view) {
         startActivity(new Intent(this, ForgotPasswordActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
+        finish();
     }
+
     private void moveChangePasswordScreen() {
-        Intent intent = new Intent(OTPVerificationActivity.this,ForgotPasswordChangeActivity.class);
-        intent.putExtra("phone_number",phoneNumber);
+        Intent intent = new Intent(OTPVerificationActivity.this, ForgotPasswordChangeActivity.class);
+        intent.putExtra("phone_number", phoneNumber);
         startActivity(intent);
-    }
-    public void onChange(View view) {
-        startActivity(new Intent(this, ForgotPasswordChangeActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+        finish();
     }
+
     private void showWarningDialog(String notify) {
         AlertDialog.Builder builder = new AlertDialog.Builder(OTPVerificationActivity.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(OTPVerificationActivity.this).inflate(
@@ -297,7 +292,7 @@ public class OTPVerificationActivity extends AppCompatActivity {
                 findViewById(R.id.layoutDialogContainer)
         );
         builder.setView(view);
-        TextView  title = view.findViewById(R.id.textTitle);
+        TextView title = view.findViewById(R.id.textTitle);
         title.setText(R.string.title);
         TextView mess = view.findViewById(R.id.textMessage);
         mess.setText(notify);

@@ -23,6 +23,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     private Context context;
     private ArrayList<Category> items;
+    ItemClick itemClick;
+
+    public void setItemClickListener(ItemClick itemClickListener) {
+        this.itemClick = itemClickListener;
+    }
 
     public CategoryAdapter(Context context, ArrayList<Category> items) {
         this.context = context;
@@ -42,6 +47,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         holder.itemImage.setImageResource(R.drawable.app);
         StorageReference imageRef = FirebaseStorage.getInstance().getReference("images/categories/" + item.getImage());
         imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri.toString()).fit().into(holder.itemImage));
+        holder.itemView.setOnClickListener(v -> {
+            if(itemClick != null) {
+                itemClick.searchCate(item.key);
+            } else return;
+        });
     }
 
     @Override
@@ -59,5 +69,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             itemImage = view.findViewById(R.id.item_image);
             itemTitle = view.findViewById(R.id.item_title);
         }
+    }
+
+    public interface ItemClick {
+        void searchCate(String key);
     }
 }

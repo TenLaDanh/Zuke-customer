@@ -50,10 +50,9 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
-            accountID = intent.getStringExtra("accountID");
-            accountRef = db.getReference("Account/" + accountID);
-        }
+        accountID = intent.getStringExtra("accountID");
+        Log.d("ABC1", "accountID: "+accountID);
+        accountRef = db.getReference("Account/" + accountID);
 
 
         // Bottom navigation:

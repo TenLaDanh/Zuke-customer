@@ -22,6 +22,7 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
+            android:focusable="false"
             android:background="@drawable/bg_search"
             android:gravity="center"
             android:iconifiedByDefault="false"
@@ -56,7 +57,7 @@
             app:layout_constraintBottom_toTopOf="@+id/customBottomBar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFilter" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/mCart"

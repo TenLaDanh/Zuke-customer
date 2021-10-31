@@ -78,7 +78,6 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
         setEvent();
     }
 
-
     private void setEvent() {
         imgFilter.setOnClickListener(v -> {
             if (!navDrawer.isDrawerOpen(Gravity.RIGHT)) navDrawer.openDrawer(Gravity.RIGHT);
@@ -103,35 +102,29 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
         });
         customBottomNavigationView.setOnItemSelectedListener(this);
         adapter.setItemClickListener(itemClick1);
-        btnApply.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnApply.setOnClickListener(v -> {
 
-                float minPrice = priceRange.getValues().get(0);
-                float maxPrice = priceRange.getValues().get(1);
+            float minPrice = priceRange.getValues().get(0);
+            float maxPrice = priceRange.getValues().get(1);
 
-                query = String.valueOf(searchView.getQuery());
-                manu_id = ((Manufactures) spinManu.getSelectedItem()).getKey();
-                cate_id = ((Category) spinCate.getSelectedItem()).getKey();
-                rating = ratingBar.getRating();
-                filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
-                navDrawer.closeDrawer(Gravity.RIGHT);
-            }
+            query = String.valueOf(searchView.getQuery());
+            manu_id = ((Manufactures) spinManu.getSelectedItem()).getKey();
+            cate_id = ((Category) spinCate.getSelectedItem()).getKey();
+            rating = ratingBar.getRating();
+            filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
+            navDrawer.closeDrawer(Gravity.RIGHT);
         });
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                minPrice = -1.0f;
-                maxPrice = -1.0f;
-                manu_id = "";
-                cate_id = "";
-                rating = -1.0f;
-                filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
-                List<Float> value = priceRange.getValues();
-                value.set(0,0.0f);
-                value.set(1,0.0f);
-                navDrawer.closeDrawer(Gravity.RIGHT);
-            }
+        btnReset.setOnClickListener(v -> {
+            minPrice = -1.0f;
+            maxPrice = -1.0f;
+            manu_id = "";
+            cate_id = "";
+            rating = -1.0f;
+            filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
+            List<Float> value = priceRange.getValues();
+            value.set(0, 0.0f);
+            value.set(1, 0.0f);
+            navDrawer.closeDrawer(Gravity.RIGHT);
         });
     }
 
@@ -139,11 +132,18 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
         //get data from intent
         intent = getIntent();
         accountID = intent.getStringExtra("accountID");
-        query = intent.getStringExtra("query");
+        if (intent.getStringExtra("query") != null) {
+            query = intent.getStringExtra("query");
+        }
+        if (intent.getStringExtra("key") != null) {
+            cate_id = intent.getStringExtra("key");
+            filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
+        }
 
         if (!query.equals("")) {
             filterProduct(query, minPrice, maxPrice, rating, cate_id, manu_id);
         }
+
         //get control
         toolbar = findViewById(R.id.toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
@@ -224,6 +224,13 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
 
             }
         });
+        for (int i = 0; i < spinCate.getCount(); i++) {
+            Category cate = (Category) spinCate.getItemAtPosition(i);
+            if (cate.getKey().equals(cate_id)) {
+                spinCate.setSelection(i);
+                break;
+            }
+        }
     }
 
     private void loadDataManu() {
@@ -296,7 +303,8 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                 if (!query.equals("")) {
                     for (int i = 0; i < list.size(); i++) {
                         Product product = list.get(i);
-                        if (!product.getName().toLowerCase().contains(query.toLowerCase().trim())) {;
+                        if (!product.getName().toLowerCase().contains(query.toLowerCase().trim())) {
+                            ;
                             list.remove(i);
                             i--;
                         }
@@ -308,7 +316,7 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                     for (int i = 0; i < list.size(); i++) {
                         iDem = i;
                         Product product = list.get(i);
-                        if (product.getPrice()> maxPrice || product.getPrice() <  minPrice) {
+                        if (product.getPrice() > maxPrice || product.getPrice() < minPrice) {
                             list.remove(iDem);
                             iDem--;
                         }
@@ -323,7 +331,7 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                         }
                     }
                 }
-                if(!cate_id.equals("")){
+                if (!cate_id.equals("")) {
                     for (int i = 0; i < list.size(); i++) {
                         Product product = list.get(i);
                         if (!product.getCategory_id().equals(cate_id)) {
@@ -332,7 +340,7 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                         }
                     }
                 }
-                if(!manu_id.equals("")){
+                if (!manu_id.equals("")) {
                     for (int i = 0; i < list.size(); i++) {
                         Product product = list.get(i);
                         if (!product.getManu_id().equals(manu_id)) {
@@ -341,7 +349,7 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                         }
                     }
                 }
-                txtFilter.setText("Kết quả : "+list.size()+" sản phẩm");
+                txtFilter.setText("Kết quả : " + list.size() + " sản phẩm");
 
                 adapter.notifyDataSetChanged();
 

@@ -42,8 +42,6 @@ public class RegisterActivity extends AppCompatActivity {
     EditText edtName, edtPhone, edtPassword, edtConfirmPass;
     CircularProgressButton btnRegis;
     FirebaseAuth mAuth;
-    Account account;
-    String name;
     boolean check = true;
 
     @Override
@@ -226,5 +224,6 @@ public class RegisterActivity extends AppCompatActivity {
     public void onLogin(View view) {
         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
+        finish();
     }
 }

@@ -209,7 +209,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                         });
                                     });
                                 });
-                            } else {
+                            }
+                            else {
                                 if (!edtName.getText().equals("")) {
                                     cusRef.orderByChild("accountID").equalTo(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override

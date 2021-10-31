@@ -28,8 +28,7 @@ import vn.edu.tdc.zuke_customer.data_models.Account;
 public class LoginActivity extends AppCompatActivity {
     private ImageView fbButton;
     private EditText edtPhone, edtPass;
-    private CircularProgressButton btnLogin;
-    private TextView btnRegis;
+    CircularProgressButton btnLogin;
     private final FirebaseDatabase db = FirebaseDatabase.getInstance();
     private final DatabaseReference ref = db.getReference("Account");
     boolean checkPhone = false,checkPass = false,checkLock = false;
@@ -49,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         fbButton.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, FacebookAuthActivity.class);
             startActivity(intent);
+            finish();
         });
     }
 
@@ -67,12 +67,13 @@ public class LoginActivity extends AppCompatActivity {
     public void onRegister(View View) {
         startActivity(new Intent(this, RegisterActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
-
+        finish();
     }
 
     public void onForgotPass(View View) {
         startActivity(new Intent(this, ForgotPasswordActivity.class));
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+        finish();
     }
 
     public void onSubmit(View View) {

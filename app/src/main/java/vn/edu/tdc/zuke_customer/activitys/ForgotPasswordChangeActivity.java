@@ -51,7 +51,7 @@ public class ForgotPasswordChangeActivity extends AppCompatActivity {
                                 Account account = node.getValue(Account.class);
                                 if(account.getUsername().equals(String.valueOf(phoneNumber))){
                                     account.setPassword(String.valueOf(edtPass.getText()));
-                                    accountRef.child(node.getKey()).setValue(account).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    accountRef.child(node.getKey()).setValue(account.toMap()).addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
                                             showSuccesDialog("Cập nhật mật khẩu thành công");

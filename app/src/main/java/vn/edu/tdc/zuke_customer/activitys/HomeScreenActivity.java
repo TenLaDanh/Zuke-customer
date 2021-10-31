@@ -82,9 +82,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if (intent.getStringExtra("accountID") != null) {
-            //accountID = intent.getStringExtra("accountID");
-        }
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -124,6 +122,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         recyclerCate.setHasFixedSize(true);
         recyclerGoiY.setHasFixedSize(true);
         recyclerMuaNhieu.setHasFixedSize(true);
+        categoryAdapter.setItemClickListener(itemClick2);
         productAdapterRating.setItemClickListener(itemClick);
         productAdapterSold.setItemClickListener(itemClick1);
 
@@ -196,6 +195,18 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
             intent.putExtra("item", item);
             intent.putExtra("accountID", accountID);
             startActivity(intent);
+        }
+    };
+
+    private final CategoryAdapter.ItemClick itemClick2 = new CategoryAdapter.ItemClick() {
+        @Override
+        public void searchCate(String key) {
+            intent = new Intent(HomeScreenActivity.this, SearchActivity.class);
+            Log.d("TAG", "searchCate: "+key);
+            intent.putExtra("key", key);
+            intent.putExtra("accountID", accountID);
+            startActivity(intent);
+            finish();
         }
     };
 

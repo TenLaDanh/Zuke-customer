@@ -31,9 +31,10 @@ import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import vn.edu.tdc.zuke_customer.R;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
-    EditText edtPhone ;
+    EditText edtPhone;
     CircularProgressButton btnSubmit;
     FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,31 +50,31 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String phoneNumber = String.valueOf(edtPhone.getText());
                 PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
-                                            .setPhoneNumber(phoneNumber)
-                                            .setTimeout(60L, TimeUnit.SECONDS)
-                                            .setActivity(ForgotPasswordActivity.this)
-                                            .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-                                                @Override
-                                                public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-                                                    Log.d("TAG", "onVerificationCompleted: ");
-                                                    signInWithPhoneAuthCredential(phoneAuthCredential);
-                                                    moveChangePasswordScreen();
-                                                }
+                        .setPhoneNumber(phoneNumber)
+                        .setTimeout(60L, TimeUnit.SECONDS)
+                        .setActivity(ForgotPasswordActivity.this)
+                        .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                            @Override
+                            public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
+                                Log.d("TAG", "onVerificationCompleted: ");
+                                signInWithPhoneAuthCredential(phoneAuthCredential);
+//                                moveChangePasswordScreen();
+                            }
 
-                                                @Override
-                                                public void onVerificationFailed(@NonNull FirebaseException e) {
-                                                    Log.d("TAG", e.getMessage());
-                                                }
+                            @Override
+                            public void onVerificationFailed(@NonNull FirebaseException e) {
+                                Log.d("TAG", e.getMessage());
+                            }
 
-                                                @Override
-                                                public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                                                    super.onCodeSent(s, forceResendingToken);
-                                                    Log.d("TAG", "onCodeSent: ");
-                                                    moveOPTActivity(phoneNumber,s);
+                            @Override
+                            public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
+                                super.onCodeSent(s, forceResendingToken);
+                                Log.d("TAG", "onCodeSent: ");
+                                moveOPTActivity(phoneNumber, s);
 
-                                                }
-                                            })
-                                            .build();
+                            }
+                        })
+                        .build();
                 PhoneAuthProvider.verifyPhoneNumber(options);
             }
         });
@@ -81,17 +82,19 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void moveChangePasswordScreen() {
-        Intent intent = new Intent(ForgotPasswordActivity.this,HomeScreenActivity.class);
+        Intent intent = new Intent(ForgotPasswordActivity.this, HomeScreenActivity.class);
         startActivity(intent);
+        finish();
     }
 
-    private void moveOPTActivity(String phoneNumber,String verification_id) {
-        Intent intent = new Intent(ForgotPasswordActivity.this,OTPVerificationActivity.class);
-        intent.putExtra("phone_number",phoneNumber);
-        intent.putExtra("verification_id",verification_id);
-        intent.putExtra("type","forgot");
+    private void moveOPTActivity(String phoneNumber, String verification_id) {
+        Intent intent = new Intent(ForgotPasswordActivity.this, OTPVerificationActivity.class);
+        intent.putExtra("phone_number", phoneNumber);
+        intent.putExtra("verification_id", verification_id);
+        intent.putExtra("type", "forgot");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
+        finish();
     }
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
@@ -103,8 +106,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
 
                             FirebaseUser user = task.getResult().getUser();
-
-                            moveChangePasswordScreen();
+//                            moveChangePasswordScreen();
                             // Update UI
                         } else {
                             // Sign in failed, display a message and update the UI
@@ -126,10 +128,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }
     }
 
-    public void onLogin(View view){
+    public void onLogin(View view) {
         startActivity(new Intent(this, LoginActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
+        finish();
     }
-
-
 }

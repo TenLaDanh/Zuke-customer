@@ -62,9 +62,7 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
-            accountID = intent.getStringExtra("accountID");
-        }
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);

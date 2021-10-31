@@ -85,11 +85,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_product);
 
-        intent = getIntent();
-        if(intent != null) {
-            accountID = intent.getStringExtra("accountID");
-        }
-
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -101,6 +96,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         // Lấy dữ liệu được gửi sang:
         intent = getIntent();
         item = intent.getParcelableExtra("item");
+        accountID = intent.getStringExtra("accountID");
 
         // Khởi tạo biến:
         imgProduct = findViewById(R.id.imgProduct);
@@ -263,7 +259,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     }
 
     private void data() {
-        // Lấy list comment limit 5:
+        // Lấy list comment limit 3:
         queryComment = ratingRef.orderByChild("productID").equalTo(item.getKey()).limitToLast(3);
         queryComment.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")

@@ -61,7 +61,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                 holder.itemName.setText(customer.getName());
                                 holder.itemDetail.setText(item.getComment());
                                 holder.itemTime.setText(timeDiff(item.getCreated_at(), new Date()));
-                                Picasso.get().load(customer.getImage()).fit().into(holder.itemImage);
+                                if(!customer.getImage().equals("")) Picasso.get().load(customer.getImage()).fit().into(holder.itemImage);
                                 holder.itemRating.setRating(item.getRating());
                                 break;
                             }

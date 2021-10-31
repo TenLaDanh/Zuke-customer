@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +48,7 @@ public class RatingActivity extends AppCompatActivity {
     Intent intent;
     Button btnSave;
     TextView title, mess;
+    Handler handler = new Handler();
 
 
     @Override
@@ -164,18 +166,19 @@ public class RatingActivity extends AppCompatActivity {
 
         final AlertDialog alertDialog = builder.create();
 
-        view.findViewById(R.id.buttonAction).setOnClickListener(v -> {
-            alertDialog.dismiss();
-            to = "read";
-            adapter.setTo(to);
-            adapter.notifyDataSetChanged();
-            btnSave.setVisibility(View.GONE);
-        });
+        to = "read";
+        adapter.setTo(to);
+        adapter.notifyDataSetChanged();
+        btnSave.setVisibility(View.GONE);
+
+        view.findViewById(R.id.buttonAction).setVisibility(View.GONE);
 
         if (alertDialog.getWindow() != null) {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+
+        handler.postDelayed(alertDialog::dismiss, 1500);
     }
 
     private void showWarningDialog(String notify) {

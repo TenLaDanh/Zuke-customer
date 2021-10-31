@@ -26,7 +26,12 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 public class ManuProductAdapter extends RecyclerView.Adapter<ManuProductAdapter.ViewHolder> {
     ArrayList<ManuProduct> list;
     Context context;
-    ArrayList<Product> listProduct;
+    String accountID = "";
+    ArrayList<Product> listProduct = new ArrayList<Product>();
+
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
+    }
 
     public ManuProductAdapter(Context context, ArrayList<ManuProduct> items) {
         this.context = context;
@@ -47,13 +52,10 @@ public class ManuProductAdapter extends RecyclerView.Adapter<ManuProductAdapter.
         holder.expandable_layout.setVisibility(isExpandable ? View.VISIBLE : View.GONE);
         if(isExpandable) holder.button_arrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up_24);
         else holder.button_arrow.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down_24);
-        holder.linear_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                item.setExpandable(!item.isExpandable());
-                listProduct = item.getListProduct();
-                notifyItemChanged(holder.getAdapterPosition());
-            }
+        holder.linear_layout.setOnClickListener(v -> {
+            item.setExpandable(!item.isExpandable());
+            listProduct = item.getListProduct();
+            notifyItemChanged(holder.getAdapterPosition());
         });
 
         // Product:
@@ -67,6 +69,7 @@ public class ManuProductAdapter extends RecyclerView.Adapter<ManuProductAdapter.
     private final Product1Adapter.ItemClickProduct itemClickProduct = item -> {
         Intent intent = new Intent(context, DetailProductActivity.class);
         intent.putExtra("item", item);
+        intent.putExtra("accountID", accountID);
         context.startActivity(intent);
     };
 

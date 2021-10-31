@@ -57,7 +57,7 @@ import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class DetailProductActivity extends AppCompatActivity implements View.OnClickListener {
     // Khai báo biến:
-    String accountID = "abc05684428156", cartID = "";
+    String accountID = "", cartID = "";
     Handler handler = new Handler();
     boolean check = true;
     Toolbar toolbar;
@@ -89,6 +89,11 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_detail_product);
+
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+        }
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -362,6 +367,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                             break;
                         }
                     }
+                    Log.d("TAG", "onDataChange: " + cartID);
                     // Nếu chưa thì? -> tạo mới
                     if (cartID.equals("")) {
                         Cart cart = new Cart(accountID, 0);

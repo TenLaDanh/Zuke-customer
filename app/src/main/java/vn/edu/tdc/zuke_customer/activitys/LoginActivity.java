@@ -46,12 +46,9 @@ public class LoginActivity extends AppCompatActivity {
         edtPass = findViewById(R.id.editTextPassword);
         btnLogin = findViewById(R.id.cirLoginButton);
 
-        fbButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, FacebookAuthActivity.class);
-                startActivity(intent);
-            }
+        fbButton.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, FacebookAuthActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -96,10 +93,9 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent itent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                                 itent.putExtra("accountID", node.getKey());
                                 startActivity(itent);
+                                finish();
                             }
-
                         }
-
                     }
                 }
                 if(!checkPhone){

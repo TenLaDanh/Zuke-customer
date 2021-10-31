@@ -72,43 +72,48 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.content.setText(item.getContent());
 
         Date now = new Date();
-        holder.created_at.setText(timeDiff(item.getCreated_at(),now));
+        holder.created_at.setText(timeDiff(item.getCreated_at(), now));
 
         viewBinderHelper.bind(holder.swipeRevealLayout, item.getKey());
+        holder.cardView.setOnClickListener(v -> {
+            if(itemClickListener != null) {
+                itemClickListener.delete(item.getKey());
+            }
+        });
     }
-    private String timeDiff(String created, Date now){
+
+    private String timeDiff(String created, Date now) {
         String time = "";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        Date create = sdf.parse(created,new ParsePosition(0));
+        Date create = sdf.parse(created, new ParsePosition(0));
         long diff = now.getTime() - create.getTime();
-        int minute = (int)(diff / (1000 * 60));
+        int minute = (int) (diff / (1000 * 60));
 
-
-        if(minute == 0){
+        if (minute == 0) {
             time = "Bây giờ";
-        }else if(minute <= 59){
-            time = minute+" phút trước";
-        }else if(minute >= 60){
-            int hour =(int)( diff / (1000 * 60 * 60));
+        } else if (minute <= 59) {
+            time = minute + " phút trước";
+        } else if (minute >= 60) {
+            int hour = (int) (diff / (1000 * 60 * 60));
 
-            if(hour <= 23){
-                time = hour+" giờ trước";
-            }
-            else {
-                int day =(int)( diff / (1000 * 60 * 60 * 24));
-                time = day +" ngày trước";
+            if (hour <= 23) {
+                time = hour + " giờ trước";
+            } else {
+                int day = (int) (diff / (1000 * 60 * 60 * 24));
+                time = day + " ngày trước";
             }
         }
-        return  time;
+        return time;
     }
+
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder{
         SwipeRevealLayout swipeRevealLayout;
-
+        CardView cardView;
         private ImageView itemImage;
         private TextView title, content, created_at;
         View.OnClickListener onClickListener;
@@ -116,25 +121,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public ViewHolder(View view) {
             super(view);
             swipeRevealLayout = view.findViewById(R.id.swipelayout);
-
+            cardView = view.findViewById(R.id.cardView);
             itemImage = view.findViewById(R.id.img);
             title = view.findViewById(R.id.txt_title);
             content = view.findViewById(R.id.txt_content);
             created_at = view.findViewById(R.id.txt_time);
         }
-
-        @Override
-        public void onClick(View v) {
-            if(onClickListener != null) {
-                onClickListener.onClick(v);
-            }
-        }
     }
 
     public interface ItemClickListener {
-        void changeQuantity(Notification item, int value);
         void delete(String id);
     }
+
     private String formatPrice(int price) {
         return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);

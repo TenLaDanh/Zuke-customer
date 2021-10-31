@@ -38,7 +38,7 @@ import vn.edu.tdc.zuke_customer.data_models.Favorite;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class FavoriteActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener{
-    String accountID = "abc05684428156", cartID = "";
+    String accountID = "", cartID = "";
     boolean check = true;
     RecyclerView recyclerView;
     ArrayList<Favorite> list;
@@ -60,6 +60,12 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_favorite);
 
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+        }
+
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,6 +73,14 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         subtitleAppbar.setText(R.string.titleDSYT);
         buttonAction = findViewById(R.id.buttonAction);
         buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
+        buttonAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(FavoriteActivity.this, NotificationActivity.class);
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+            }
+        });
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -167,6 +181,7 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         public void detailProduct(Product product) {
             intent = new Intent(FavoriteActivity.this, DetailProductActivity.class);
             intent.putExtra("item", product);
+            intent.putExtra("accountID", accountID);
             startActivity(intent);
         }
     };
@@ -253,20 +268,24 @@ public class FavoriteActivity extends AppCompatActivity implements NavigationBar
         switch (id) {
             case R.id.mHome:
                 intent = new Intent(FavoriteActivity.this, HomeScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mCategory:
                 intent = new Intent(FavoriteActivity.this, CategoryActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mCart:
                 intent = new Intent(FavoriteActivity.this, CartActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 break;
             case R.id.mProfile:
                 intent = new Intent(FavoriteActivity.this, ProfileScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;

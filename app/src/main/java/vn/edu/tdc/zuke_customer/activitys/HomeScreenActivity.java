@@ -3,7 +3,10 @@ package vn.edu.tdc.zuke_customer.activitys;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,7 +42,8 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 public class HomeScreenActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     // Khai báo biến:
     Toolbar toolbar;
-    String accountID = "";
+    String accountID = "-MnFno1Jzj8tuduSeAw4";
+    ImageView buttonAction;
     RecyclerView recyclerCate, recyclerGoiY, recyclerMuaNhieu;
     ArrayList<Category> listCate;
     ArrayList<Product> listProductSold, listProductRating;
@@ -64,9 +68,25 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_home);
 
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        if(intent != null) {
+            //accountID = intent.getStringExtra("accountID");
+        }
+
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        buttonAction = findViewById(R.id.buttonAction);
+
+        buttonAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(HomeScreenActivity.this, NotificationActivity.class);
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+            }
+        });
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -118,6 +138,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         public void getDetailProduct(Product item) {
             intent = new Intent(HomeScreenActivity.this, DetailProductActivity.class);
             intent.putExtra("item", item);
+            intent.putExtra("accountID", accountID);
             startActivity(intent);
         }
     };
@@ -127,6 +148,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         public void getDetailProduct(Product item) {
             intent = new Intent(HomeScreenActivity.this, DetailProductActivity.class);
             intent.putExtra("item", item);
+            intent.putExtra("accountID", accountID);
             startActivity(intent);
         }
     };
@@ -228,20 +250,24 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
                 break;
             case R.id.mCategory:
                 intent = new Intent(HomeScreenActivity.this, CategoryActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mCart:
                 intent = new Intent(HomeScreenActivity.this, CartActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 break;
             case R.id.mProfile:
                 intent = new Intent(HomeScreenActivity.this, ProfileScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mFavorite:
                 intent = new Intent(HomeScreenActivity.this, FavoriteActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;

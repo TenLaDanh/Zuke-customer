@@ -99,13 +99,13 @@ public class Account implements Parcelable {
         dest.writeInt(role_id);
         dest.writeString(status);
     }
-    
-    public HashMap<String,Object> toMap(){
-        HashMap<String,Object> map = new HashMap<>();
-        map.put("username",username);
-        map.put("password",password);
-        map.put("role_id",role_id);
-        map.put("status",status);
+
+    public HashMap<String, Object> toMap() {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password);
+        map.put("role_id", role_id);
+        map.put("status", status);
         return map;
     }
 }

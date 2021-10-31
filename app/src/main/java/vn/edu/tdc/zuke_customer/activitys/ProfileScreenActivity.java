@@ -3,6 +3,7 @@ package vn.edu.tdc.zuke_customer.activitys;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,7 +29,7 @@ import vn.edu.tdc.zuke_customer.data_models.Customer;
 import vn.edu.tdc.zuke_customer.data_models.Order;
 
 public class ProfileScreenActivity extends AppCompatActivity implements View.OnClickListener, NavigationBarView.OnItemSelectedListener{
-    String accountID = "abc05684428156", userID = "";
+    String accountID = "";
     ImageView imgCustomer, imgType;
     TextView name, phone, donDM, donHT, donH, type;
     RelativeLayout lsDH, hoTro, gioiThieu, dangXuat, ttCaNhan;
@@ -36,7 +37,7 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
     Intent intent;
 
     FirebaseDatabase db = FirebaseDatabase.getInstance();
-    DatabaseReference accountRef = db.getReference("Account/" + accountID);
+    DatabaseReference accountRef;
     DatabaseReference cusRef = db.getReference("Customer");
     DatabaseReference cusTypeRef = db.getReference("CustomerType");
     DatabaseReference orderRef = db.getReference("Order");
@@ -46,6 +47,14 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_profile);
+
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+            accountRef = db.getReference("Account/" + accountID);
+        }
+
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -123,8 +132,7 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
                                 imgType.setImageResource(R.drawable.ic_baseline_emoji_events_24_diamond);
                                 break;
                         }
-                        Picasso.get().load(customer.getImage()).fit().into(imgCustomer);
-                        userID = customer.getKey();
+                        if(!customer.getImage().equals("")) Picasso.get().load(customer.getImage()).fit().into(imgCustomer);
                     }
                 }
             }
@@ -166,7 +174,6 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
 
             }
         });
-
     }
 
     @Override
@@ -188,7 +195,6 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
         } else {
             intent = new Intent(ProfileScreenActivity.this, EditProfileActivity.class);
             intent.putExtra("accountID", accountID);
-            intent.putExtra("userID", userID);
             startActivity(intent);
         }
     }
@@ -201,22 +207,26 @@ public class ProfileScreenActivity extends AppCompatActivity implements View.OnC
         switch (id) {
             case R.id.mHome:
                 intent = new Intent(ProfileScreenActivity.this, HomeScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mCategory:
                 intent = new Intent(ProfileScreenActivity.this, CategoryActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mCart:
                 intent = new Intent(ProfileScreenActivity.this, CartActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 break;
             case R.id.mProfile:
                 break;
             case R.id.mFavorite:
                 intent = new Intent(ProfileScreenActivity.this, FavoriteActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;

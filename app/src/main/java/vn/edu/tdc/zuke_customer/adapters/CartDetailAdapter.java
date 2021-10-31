@@ -108,12 +108,9 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         final long ONE_MEGABYTE = 1024 * 1024;
                         StorageReference imageRef = storage.getReference("images/products/" + product.getName() + "/" + product.getImage());
-                        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
-                            }
+                        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                            holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
                         });
                     }
                 }
@@ -137,7 +134,7 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
                     holder.edtValue.setText(String.valueOf(value));
                     itemClickListener.changeQuantity(item, value);
                 }
-                if (v == holder.cardView) itemClickListener.delete(item.getKey());
+                if (v == holder.cardView) itemClickListener.delete(item.getKey(), formatInt(holder.itemPriceDiscount.getText().toString()));
 
             } else {
                 return;
@@ -187,10 +184,16 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
 
     public interface ItemClickListener {
         void changeQuantity(CartDetail item, int value);
-        void delete(String id);
+        void delete(String id, int price);
     }
+
     private String formatPrice(int price) {
-        return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
+        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
+        return s.substring(2, s.length()) + " ₫";
+    }
+
+    private int formatInt(String price) {
+        return Integer.parseInt(price.substring(0, price.length() - 2).replace(".", ""));
     }
 }

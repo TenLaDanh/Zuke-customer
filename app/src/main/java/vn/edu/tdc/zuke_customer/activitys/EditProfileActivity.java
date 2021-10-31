@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -34,11 +35,12 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import vn.edu.tdc.zuke_customer.R;
+import vn.edu.tdc.zuke_customer.data_models.Customer;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     TextView subtitleAppbar;
-    String accountID = "abc05684428156", userID = "-Mn-ErvarWALssFzgmSl";
+    String accountID = "", userID = "";
     Intent intent;
     TextView title, mess;
     ImageView imgCus, btnChooseDate;
@@ -49,8 +51,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     Uri filePath = null;
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     StorageReference storage = FirebaseStorage.getInstance().getReference();
-    DatabaseReference cusRef = db.getReference("Customer/" + userID);
-    DatabaseReference accountRef = db.getReference("Account/" + accountID);
+    DatabaseReference cusRef = db.getReference("Customer");
+    DatabaseReference accountRef;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,9 +60,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.layout_detail_profile);
 
         // Nhận dữ liệu từ intent:
-//        intent = getIntent();
-//        userID = intent.getStringExtra("userID");
-//        accountID = intent.getStringExtra("accountID");
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+            accountRef = db.getReference("Account/" + accountID);
+        }
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -85,23 +89,26 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         btnChangePass.setOnClickListener(this);
         btnChooseDate.setOnClickListener(this);
 
-        if (!userID.equals("")) {
-            cusRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    Picasso.get().load(snapshot.child("image").getValue(String.class)).fit().into(imgCus);
-                    edtDOB.setText(snapshot.child("dob").getValue(String.class));
-                    edtName.setText(snapshot.child("name").getValue(String.class));
-                    edtEmail.setText(snapshot.child("email").getValue(String.class));
-                    btnChooseDate.setVisibility(snapshot.child("dob").getValue(String.class).equals("")? View.VISIBLE : View.GONE);
+        // Lấy khách hàng tương ứng:
+        cusRef.orderByChild("accountID").equalTo(accountID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    Customer customer = snapshot1.getValue(Customer.class);
+                    if(!customer.getImage().equals("")) Picasso.get().load(customer.getImage()).fit().into(imgCus);
+                    edtDOB.setText(customer.getDob());
+                    edtName.setText(customer.getName());
+                    edtEmail.setText(customer.getEmail());
+                    btnChooseDate.setVisibility(customer.getDob().equals("") ? View.VISIBLE : View.GONE);
                 }
+//
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
-        }
+            }
+        });
     }
 
     @Override
@@ -186,16 +193,14 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                         }).addOnFailureListener(e -> showWarningDialog("Cập nhật thông tin thất bại!"));
                                     });
                                 });
-                            }
-                            else {
-                                if(!edtName.getText().equals("")) {
+                            } else {
+                                if (!edtName.getText().equals("")) {
                                     cusRef.child("dob").setValue(edtDOB.getText() + "");
                                     cusRef.child("name").setValue(edtName.getText() + "");
                                     cusRef.child("email").setValue(edtEmail.getText() + "");
                                     alertDialog.dismiss();
                                     showSuccesDialog("Cập nhật thông tin thành công");
-                                }
-                                else showWarningDialog("Tên hiển thị không được để trống!");
+                                } else showWarningDialog("Tên hiển thị không được để trống!");
                             }
                         }
                         // Nếu sai thì thông báo warning

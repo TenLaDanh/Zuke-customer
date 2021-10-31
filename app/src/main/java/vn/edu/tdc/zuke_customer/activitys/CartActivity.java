@@ -1,12 +1,18 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -20,7 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -30,16 +38,20 @@ import vn.edu.tdc.zuke_customer.data_models.Cart;
 import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
+import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class CartActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView subtitleAppbar;
+    Intent intent;
+    TextView subtitleAppbar, title, mess;
     ImageView buttonAction;
-    String accountID = "abc05684428156";
+    String accountID = "";
     RecyclerView cartRecycleView;
     Button btnPayment;
     ArrayList<CartDetail> listCart;
     CartDetailAdapter cartAdapter;
+    Handler handler = new Handler();
+
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference proRef = db.getReference("Products");
     DatabaseReference ref = db.getReference("Cart");
@@ -51,15 +63,24 @@ public class CartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_list_cart);
 
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+        }
+
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         subtitleAppbar = findViewById(R.id.subtitleAppbar);
         subtitleAppbar.setText(R.string.titleGH);
         buttonAction = findViewById(R.id.buttonAction);
-        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
+        buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_baseline_delete_24));
         assert getSupportActionBar() != null;   //null check
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        buttonAction.setOnClickListener(v -> {
+            showErrorDialog("Bạn có muốn làm sạch giỏ hàng?");
+        });
 
         // Khởi tạo biến:
         btnPayment = findViewById(R.id.buttonThanhToan);
@@ -67,6 +88,16 @@ public class CartActivity extends AppCompatActivity {
         cartRecycleView.setHasFixedSize(true);
         listCart = new ArrayList<>();
         cartAdapter = new CartDetailAdapter(this, listCart);
+        btnPayment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(CartActivity.this, PaymentActivity.class);
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+            }
+        });
+
+        // Gán dữ liệu:
         data();
         cartAdapter.setItemClickListener(itemClickListener);
         cartRecycleView.setAdapter(cartAdapter);
@@ -114,8 +145,8 @@ public class CartActivity extends AppCompatActivity {
 
                             }
                         });
+                        break;
                     }
-                    break;
                 }
             }
 
@@ -126,6 +157,7 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
+    // Xử lý click đối tượng
     private CartDetailAdapter.ItemClickListener itemClickListener = new CartDetailAdapter.ItemClickListener() {
         @Override
         public void changeQuantity(CartDetail item, int value) {
@@ -154,7 +186,7 @@ public class CartActivity extends AppCompatActivity {
                                         }
                                     }
                                     if (maxSale != 0) {
-                                        int priceDiscount = product.getPrice() / 100 * (100-maxSale);
+                                        int priceDiscount = product.getPrice() / 100 * (100 - maxSale);
                                         item.setPrice(priceDiscount);
                                         map.put("price", item.getPrice());
                                         DatabaseReference detailRef = db.getReference("Cart_Detail");
@@ -190,15 +222,29 @@ public class CartActivity extends AppCompatActivity {
         }
 
         @Override
-        public void delete(String id) {
-            detailRef.child(id).removeValue();
-            updateCartTotal(id);
+        public void delete(String id, int price) {
+            detailRef.child(id).removeValue().addOnSuccessListener(unused -> ref.orderByChild("accountID").equalTo(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        Cart cart = snapshot1.getValue(Cart.class);
+                        cart.setTotal(cart.getTotal() - price);
+                        ref.child(snapshot1.getKey()).setValue(cart);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            }));
         }
     };
 
     private String formatPrice(int price) {
-        return NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
+        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
                 .format(price);
+        return s.substring(2, s.length()) + " ₫";
     }
 
     private void updateCartTotal(String cartID) {
@@ -209,7 +255,7 @@ public class CartActivity extends AppCompatActivity {
                 for (DataSnapshot node : snapshot.getChildren()) {
                     CartDetail detail = node.getValue(CartDetail.class);
                     if (detail.getCartID().equals(cartID)) {
-                        total += detail.getPrice()*detail.getAmount();
+                        total += detail.getPrice() * detail.getAmount();
                     }
                 }
                 HashMap<String, Object> map = new HashMap<>();
@@ -223,5 +269,93 @@ public class CartActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    // Thông báo:
+    private void showErrorDialog(String notify) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(CartActivity.this).inflate(
+                R.layout.layout_error_dialog,
+                findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        title = view.findViewById(R.id.textTitle);
+        title.setText(R.string.title);
+        mess = view.findViewById(R.id.textMessage);
+        mess.setText(notify);
+        ((TextView) view.findViewById(R.id.buttonYes)).setText(getResources().getString(R.string.yes));
+        ((TextView) view.findViewById(R.id.buttonNo)).setText(getResources().getString(R.string.no));
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonYes).setOnClickListener(v -> {
+            alertDialog.dismiss();
+            // Xoá hết:
+            ref.orderByChild("accountID").equalTo(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        String cartID = snapshot1.getKey();
+                        ref.child(cartID).child("total").setValue(0);
+                        detailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot node : snapshot.getChildren()) {
+                                    CartDetail detail = node.getValue(CartDetail.class);
+                                    detail.setKey(node.getKey());
+                                    if(detail.getCartID().equals(cartID)) {
+                                        detailRef.child(detail.getKey()).removeValue();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+            showSuccesDialog("Đã làm sạch giỏ hàng, hãy quay lại trang chủ để tiếp tục mua hàng!");
+        });
+
+        view.findViewById(R.id.buttonNo).setOnClickListener(v -> alertDialog.dismiss());
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+        alertDialog.show();
+    }
+
+    private void showSuccesDialog(String notify) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CartActivity.this, R.style.AlertDialogTheme);
+        View view = LayoutInflater.from(CartActivity.this).inflate(
+                R.layout.layout_succes_dialog,
+                findViewById(R.id.layoutDialogContainer)
+        );
+        builder.setView(view);
+        title = view.findViewById(R.id.textTitle);
+        title.setText(R.string.title);
+        mess = view.findViewById(R.id.textMessage);
+        mess.setText(notify);
+        ((TextView) view.findViewById(R.id.buttonAction)).setText(getResources().getString(R.string.okay));
+
+        final AlertDialog alertDialog = builder.create();
+
+        view.findViewById(R.id.buttonAction).setVisibility(View.GONE);
+
+        if (alertDialog.getWindow() != null) {
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+
+        alertDialog.show();
+
+        handler.postDelayed(alertDialog::dismiss, 1500);
     }
 }

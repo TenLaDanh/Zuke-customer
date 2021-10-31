@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,47 +37,43 @@ import java.util.concurrent.TimeUnit;
 import br.com.simplepass.loadingbutton.customViews.CircularProgressButton;
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.Account;
-import vn.edu.tdc.zuke_customer.data_models.Customer;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText edtName,edtPhone,edtPassword,edtConfirmPass;
+    EditText edtName, edtPhone, edtPassword, edtConfirmPass;
     CircularProgressButton btnRegis;
     FirebaseAuth mAuth;
     Account account;
     String name;
-    boolean check  = true;
+    boolean check = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_register);
         changeStatusBarColor();
         UIinit();
-        btnRegis.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPhone();
-                if(checkError() == 1){
-                    if(check == true){
-                        Account account = new Account();
-                        account.setUsername(edtPhone.getText().toString());
-                        account.setPassword(edtPassword.getText().toString());
-                        account.setRole_id(1);
-                        account.setStatus("unlock");
-                        sendOTPCode(account,edtName.getText().toString());
-                    }
-                    else {
-                        showWarningDialog("Số điện thoại đã được đăng ký");
+        btnRegis.setOnClickListener(v -> {
+            checkPhone();
+            if (checkError() == 1) {
+                if (check == true) {
+                    Account account = new Account();
+                    account.setUsername(edtPhone.getText().toString());
+                    account.setPassword(edtPassword.getText().toString());
+                    account.setRole_id(1);
+                    account.setStatus("unlock");
+                    sendOTPCode(account, edtName.getText().toString());
+                } else {
+                    showWarningDialog("Số điện thoại đã được đăng ký");
 
-                    }
                 }
             }
         });
     }
 
-    private void sendOTPCode(Account account,String name) {
+    private void sendOTPCode(Account account, String name) {
         String phoneNumber = String.valueOf(edtPhone.getText());
-        phoneNumber = "+84".concat(phoneNumber.substring(1,phoneNumber.length()));
-        Log.d("TAG", "sendOTPCode: "+phoneNumber);
+        phoneNumber = "+84".concat(phoneNumber.substring(1, phoneNumber.length()));
+        Log.d("TAG", "sendOTPCode: " + phoneNumber);
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(mAuth)
                 .setPhoneNumber(phoneNumber)
                 .setTimeout(60L, TimeUnit.SECONDS)
@@ -93,14 +88,14 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        Log.d("TAG", " "+e.getMessage());
+                        Log.d("TAG", " " + e.getMessage());
                     }
 
                     @Override
                     public void onCodeSent(@NonNull String s, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(s, forceResendingToken);
                         Log.d("TAG", "onCodeSent: ");
-                        moveOPTActivity(account,s,name);
+                        moveOPTActivity(account, s, name);
 
                     }
                 })
@@ -116,51 +111,49 @@ public class RegisterActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.editTextPassword);
         edtConfirmPass = findViewById(R.id.editTextConfirmPassword);
         mAuth = FirebaseAuth.getInstance();
-
     }
-    private void moveOPTActivity(Account account,String verification_id,String name) {
-        Intent intent = new Intent(RegisterActivity.this,OTPVerificationActivity.class);
-        intent.putExtra("phone_number",account.getUsername());
-        intent.putExtra("verification_id",verification_id);
-        intent.putExtra("type","regis");
+
+    private void moveOPTActivity(Account account, String verification_id, String name) {
+        Intent intent = new Intent(RegisterActivity.this, OTPVerificationActivity.class);
+        intent.putExtra("phone_number", account.getUsername());
+        intent.putExtra("verification_id", verification_id);
+        intent.putExtra("type", "regis");
         intent.putExtra("account", account);
-        intent.putExtra("name",name);
+        intent.putExtra("name", name);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.stay);
     }
-    private int checkError(){
-        if(String.valueOf(edtName.getText()).equals("")){
 
+    private int checkError() {
+        if (String.valueOf(edtName.getText()).equals("")) {
             showWarningDialog("Họ và tên không được để trống");
             return -1;
         }
-        if(String.valueOf(edtPhone.getText()).equals("")){
-
+        if (String.valueOf(edtPhone.getText()).equals("")) {
             showWarningDialog("Số điện thoại không được để trống");
             return -1;
         }
-        if(String.valueOf(edtPassword.getText()).equals("")){
-
+        if (String.valueOf(edtPassword.getText()).equals("")) {
             showWarningDialog("Mật khẩu không được để trống");
             return -1;
         }
 
-        if(!String.valueOf(edtConfirmPass.getText()).equals(String.valueOf(edtPassword.getText()))){
-
+        if (!String.valueOf(edtConfirmPass.getText()).equals(String.valueOf(edtPassword.getText()))) {
             showWarningDialog("Mật khẩu xác nhận không trùng khớp");
             return -1;
         }
         return 1;
 
     }
-    private void checkPhone(){
+
+    private void checkPhone() {
         DatabaseReference accountRef = FirebaseDatabase.getInstance().getReference("Account");
         accountRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot node : snapshot.getChildren()){
+                for (DataSnapshot node : snapshot.getChildren()) {
                     Account account = node.getValue(Account.class);
-                    if(account.getUsername().equals(String.valueOf(edtPhone.getText()))){
+                    if (account.getUsername().equals(String.valueOf(edtPhone.getText()))) {
                         check = false;
                     }
                 }
@@ -172,23 +165,19 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-
-                            FirebaseUser user = task.getResult().getUser();
-                            // Update UI
-                            moveHomeScreen();
-                        } else {
-                            // Sign in failed, display a message and update the UI
-
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                //Thông báo OTP sai
-                            }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        FirebaseUser user = task.getResult().getUser();
+                        // Update UI
+                        moveHomeScreen();
+                    } else {
+                        // Sign in failed, display a message and update the UI
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            //Thông báo OTP sai
                         }
                     }
                 });
@@ -198,6 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(new Intent(RegisterActivity.this, HomeScreenActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
+
     private void showWarningDialog(String notify) {
         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this, R.style.AlertDialogTheme);
         View view = LayoutInflater.from(RegisterActivity.this).inflate(
@@ -205,7 +195,7 @@ public class RegisterActivity extends AppCompatActivity {
                 findViewById(R.id.layoutDialogContainer)
         );
         builder.setView(view);
-        TextView  title = view.findViewById(R.id.textTitle);
+        TextView title = view.findViewById(R.id.textTitle);
         title.setText(R.string.title);
         TextView mess = view.findViewById(R.id.textMessage);
         mess.setText(notify);
@@ -223,6 +213,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         alertDialog.show();
     }
+
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -232,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public void onLogin(View view){
+    public void onLogin(View view) {
         startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         overridePendingTransition(R.anim.slide_in_left, android.R.anim.slide_out_right);
     }

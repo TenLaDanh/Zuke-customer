@@ -32,6 +32,7 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
     // Khai báo biến:
     Toolbar toolbar;
     TextView subtitleAppbar;
+    String from = "", accountID = "";
     TextView txtTotal, txtDate, txtStatus, txtNote, txtName, txtAddress, txtPhone;
     Intent intent;
     Order item = null;
@@ -50,6 +51,8 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
         // Nhận đối tượng item từ intent
         intent = getIntent();
         item = intent.getParcelableExtra("item");
+        from = intent.getStringExtra("from");
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -105,6 +108,9 @@ public class DetailHistoryOrderActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
+        if(from.equals("payment")) {
+            startActivity(new Intent(DetailHistoryOrderActivity.this, HomeScreenActivity.class).putExtra("account", accountID));
+        }
         onBackPressed();
         return true;
     }

@@ -44,6 +44,7 @@ import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 
 public class PaymentActivity extends AppCompatActivity {
     Toolbar toolbar;
+    Intent intent;
     ImageView btnMap;
     Button btnSubmit;
     TextInputEditText edtAddress, edtName, edtPhone, edtDiscountCode, edtNote;
@@ -52,7 +53,7 @@ public class PaymentActivity extends AppCompatActivity {
     ArrayList<CartDetail> listCart;
     CartDetailTTAdapter cartAdapter;
     int total = 0;
-    String accountID = "abc05684428156";
+    String accountID = "";
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
     DatabaseReference detailRef = db.getReference("Cart_Detail");
@@ -66,6 +67,10 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_payment);
+
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -91,10 +96,10 @@ public class PaymentActivity extends AppCompatActivity {
         listCart = new ArrayList<>();
         cartAdapter = new CartDetailTTAdapter(this, listCart);
 
-        if (getIntent().getStringExtra("address") != null) {
-            address = getIntent().getStringExtra("address");
-            edtAddress.setText(address);
-        }
+//        if (getIntent().getStringExtra("address") != null) {
+//            address = getIntent().getStringExtra("address");
+//            edtAddress.setText(address);
+//        }
 
         // Gọi hàm lấy dữ liệu:
         data();
@@ -357,8 +362,6 @@ public class PaymentActivity extends AppCompatActivity {
         txtDiscount.setText(formatPrice(0));
         txtTransportFee.setText(formatPrice(0));
         txtRemain.setText(formatPrice(0));
-
-
         cartRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -456,7 +459,10 @@ public class PaymentActivity extends AppCompatActivity {
 
         view.findViewById(R.id.buttonAction).setOnClickListener(v -> {
             alertDialog.dismiss();
-            startActivity(new Intent(PaymentActivity.this, DetailHistoryOrderActivity.class).putExtra("item", item));
+            startActivity(new Intent(PaymentActivity.this, DetailHistoryOrderActivity.class)
+                    .putExtra("item", item)
+                    .putExtra("from", "payment")
+                    .putExtra("accountID", accountID));
         });
 
         if (alertDialog.getWindow() != null) {

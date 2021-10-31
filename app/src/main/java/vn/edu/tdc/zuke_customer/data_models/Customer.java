@@ -9,6 +9,7 @@ public class Customer {
     private String name;
     private String status;
     private String type_id;
+    private String email;
 
     public String getKey() {
         return key;
@@ -72,6 +73,14 @@ public class Customer {
 
     public void setType_id(String type_id) {
         this.type_id = type_id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Customer() {

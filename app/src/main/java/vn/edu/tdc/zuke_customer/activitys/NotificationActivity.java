@@ -1,5 +1,6 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -27,19 +28,25 @@ import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.Notification;
 
 public class NotificationActivity extends AppCompatActivity {
-    String accountID = "-MmcLcAy0lUBiYMA5E8c";
+    String accountID = "-MnFno1Jzj8tuduSeAw4";
     RecyclerView recycleView;
     Toolbar toolbar;
     TextView subtitleAppbar;
+    Intent intent;
 
     ArrayList<Notification> listNotify;
     NotificationAdapter notificationAdapter;
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference notiRef = FirebaseDatabase.getInstance().getReference("Notification");
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_list);
+
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -54,6 +61,7 @@ public class NotificationActivity extends AppCompatActivity {
         recycleView.setHasFixedSize(true);
         listNotify = new ArrayList<>();
         notificationAdapter = new NotificationAdapter(this, listNotify);
+        notificationAdapter.setItemClickListener(itemClickListener);
         data();
         recycleView.setAdapter(notificationAdapter);
         recycleView.setLayoutManager(new LinearLayoutManager(this));
@@ -62,6 +70,8 @@ public class NotificationActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recycleView.addItemDecoration(itemDecoration);
     }
+
+    private NotificationAdapter.ItemClickListener itemClickListener = id -> notiRef.child(id).removeValue();
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -74,9 +84,10 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listNotify.clear();
-                for(DataSnapshot node :snapshot.getChildren()){
+                for (DataSnapshot node : snapshot.getChildren()) {
                     Notification noti = node.getValue(Notification.class);
-                    if(noti.getAccountID().equals(accountID)){
+                    noti.setKey(node.getKey());
+                    if (noti.getAccountID().equals(accountID)) {
                         listNotify.add(noti);
                     }
                 }

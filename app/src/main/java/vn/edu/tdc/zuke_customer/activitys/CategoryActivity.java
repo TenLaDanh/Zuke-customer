@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +37,7 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class CategoryActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
     // Khai báo biến:
+    String accountID = "";
     RecyclerView rcvCate, rcvManu;
     ArrayList<Product> listProduct;
     ArrayList<Manufactures> listManu;
@@ -60,6 +62,12 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_category);
 
+        // Nhận dữ liệu từ intent:
+        intent = getIntent();
+        if(intent != null) {
+            accountID = intent.getStringExtra("accountID");
+        }
+
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -67,6 +75,14 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         subtitleAppbar.setText(R.string.titleDMSP);
         buttonAction = findViewById(R.id.buttonAction);
         buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_notifications_24));
+        buttonAction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent = new Intent(CategoryActivity.this, NotificationActivity.class);
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+            }
+        });
 
         // Bottom navigation:
         customBottomNavigationView = findViewById(R.id.customBottomBar);
@@ -83,6 +99,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         listManuProduct = new ArrayList<>();
         adapterCate = new Category1Adapter(this, listCate);
         adapterManuProduct = new ManuProductAdapter(this, listManuProduct);
+        adapterManuProduct.setAccountID(accountID);
         // RecyclerView
         data();
         //Category:
@@ -234,6 +251,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
         switch (id) {
             case R.id.mHome:
                 intent = new Intent(CategoryActivity.this, HomeScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
@@ -241,15 +259,18 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                 break;
             case R.id.mCart:
                 intent = new Intent(CategoryActivity.this, CartActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 break;
             case R.id.mProfile:
                 intent = new Intent(CategoryActivity.this, ProfileScreenActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;
             case R.id.mFavorite:
                 intent = new Intent(CategoryActivity.this, FavoriteActivity.class);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
                 finish();
                 break;

@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -29,8 +28,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,9 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.CommentAdapter;
@@ -240,9 +235,16 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     };
 
     private String formatPrice(int price) {
-        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
-                .format(price);
-        return s.substring(2, s.length()) + " ₫";
+        String stmp = String.valueOf(price);
+        int amount;
+        amount = (int)(stmp.length() / 3);
+        if (stmp.length() % 3 == 0)
+            amount--;
+        for (int i = 1; i <= amount; i++)
+        {
+            stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
+        }
+        return stmp + " ₫";
     }
 
     @Override
@@ -315,7 +317,9 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v) {
         if (v == btnMuaNgay) {
-
+            addCart();
+            startActivity(new Intent(DetailProductActivity.this, PaymentActivity.class)
+                    .putExtra("accountID", accountID));
         }
         else if (v == hotline) {
             intent = new Intent(Intent.ACTION_CALL);
@@ -326,67 +330,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             startActivity(intent);
         }
         else if (v == addCart) {
-            // Kiểm tra đã có giỏ hàng chưa?
-            cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    cartID = "";
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        if (dataSnapshot.child("accountID").getValue(String.class).equals(accountID)) {
-                            // Nếu có thì? -> lấy CartID
-                            cartID = dataSnapshot.getKey();
-                            cartDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot1) {
-                                    check = true;
-                                    int total = dataSnapshot.child("total").getValue(Integer.class);
-                                    for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
-                                        CartDetail cartDetail = dataSnapshot1.getValue(CartDetail.class);
-                                        cartDetail.setKey(dataSnapshot1.getKey());
-                                        if (cartDetail.getCartID().equals(cartID) && cartDetail.getProductID().equals(item.getKey())) {
-                                            check = false;
-                                            int amount = cartDetail.getAmount() + 1;
-                                            cartDetailRef.child(cartDetail.getKey()).child("amount").setValue(amount);
-                                            cartDetailRef.child(cartDetail.getKey()).child("price").setValue(formatInt(price.getText().toString()));
-                                            cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
-                                            break;
-                                        }
-                                    }
-                                    if (check) {
-                                        CartDetail cartDetail = new CartDetail(cartID, item.getKey(), 1, formatInt(price.getText().toString()));
-                                        cartDetailRef.push().setValue(cartDetail);
-                                        cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-                            break;
-                        }
-                    }
-                    Log.d("TAG", "onDataChange: " + cartID);
-                    // Nếu chưa thì? -> tạo mới
-                    if (cartID.equals("")) {
-                        Cart cart = new Cart(accountID, 0);
-                        String key = cartRef.push().getKey();
-                        cartRef.child(key).setValue(cart);
-                        cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
-                        CartDetail cartDetail = new CartDetail(key, item.getKey(), 1, formatInt(price.getText().toString()));
-                        cartDetailRef.push().setValue(cartDetail);
-                        cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
-                    }
-
-                    showSuccesDialog("Thêm vào giỏ hàng thành công!");
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+            addCart();
         }
         else if (v == button_favorite) {
             if (!button_favorite.isChecked()) {
@@ -414,13 +358,80 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 favorite.setUserId(accountID);
                 favoriteRef.push().setValue(favorite).addOnSuccessListener(unused -> showSuccesDialog("Thêm sản phẩm vào yêu thích thành công!")).addOnFailureListener(e -> showWarningDialog("Thêm sản phẩm vào yêu thích thất bại!"));
             }
-        } else {
+        }
+        else {
             // Xem tất cả bình luận
+            startActivity(new Intent(DetailProductActivity.this, ListCommentProductActivity.class)
+                    .putExtra("productID", item.getKey())
+                    .putExtra("accountID", accountID));
         }
     }
 
+    private void addCart() {
+        // Kiểm tra đã có giỏ hàng chưa?
+        cartRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cartID = "";
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (dataSnapshot.child("accountID").getValue(String.class).equals(accountID)) {
+                        // Nếu có thì? -> lấy CartID
+                        cartID = dataSnapshot.getKey();
+                        cartDetailRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                check = true;
+                                int total = dataSnapshot.child("total").getValue(Integer.class);
+                                for (DataSnapshot dataSnapshot1 : snapshot1.getChildren()) {
+                                    CartDetail cartDetail = dataSnapshot1.getValue(CartDetail.class);
+                                    cartDetail.setKey(dataSnapshot1.getKey());
+                                    if (cartDetail.getCartID().equals(cartID) && cartDetail.getProductID().equals(item.getKey())) {
+                                        check = false;
+                                        int amount = cartDetail.getAmount() + 1;
+                                        cartDetailRef.child(cartDetail.getKey()).child("amount").setValue(amount);
+                                        cartDetailRef.child(cartDetail.getKey()).child("price").setValue(formatInt(price.getText().toString()));
+                                        cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
+                                        break;
+                                    }
+                                }
+                                if (check) {
+                                    CartDetail cartDetail = new CartDetail(cartID, item.getKey(), 1, formatInt(price.getText().toString()));
+                                    cartDetailRef.push().setValue(cartDetail);
+                                    cartRef.child(cartID).child("total").setValue(total + formatInt(price.getText().toString()));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        break;
+                    }
+                }
+                // Nếu chưa thì? -> tạo mới
+                if (cartID.equals("")) {
+                    Cart cart = new Cart(accountID, 0);
+                    String key = cartRef.push().getKey();
+                    cartRef.child(key).setValue(cart);
+                    cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
+                    CartDetail cartDetail = new CartDetail(key, item.getKey(), 1, formatInt(price.getText().toString()));
+                    cartDetailRef.push().setValue(cartDetail);
+                    cartRef.child(key).child("total").setValue(formatInt(price.getText().toString()));
+                }
+
+                showSuccesDialog("Thêm vào giỏ hàng thành công!");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private int formatInt(String price) {
-        return Integer.parseInt(price.substring(0, price.length() - 2).replace(".", ""));
+        return Integer.parseInt(price.substring(0, price.length() - 2).replace(",", ""));
     }
 
     private void showWarningDialog(String notify) {

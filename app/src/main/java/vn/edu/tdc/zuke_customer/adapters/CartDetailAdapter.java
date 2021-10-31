@@ -188,12 +188,19 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     }
 
     private String formatPrice(int price) {
-        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
-                .format(price);
-        return s.substring(2, s.length()) + " ₫";
+        String stmp = String.valueOf(price);
+        int amount;
+        amount = (int)(stmp.length() / 3);
+        if (stmp.length() % 3 == 0)
+            amount--;
+        for (int i = 1; i <= amount; i++)
+        {
+            stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
+        }
+        return stmp + " ₫";
     }
 
     private int formatInt(String price) {
-        return Integer.parseInt(price.substring(0, price.length() - 2).replace(".", ""));
+        return Integer.parseInt(price.substring(0, price.length() - 2).replace(",", ""));
     }
 }

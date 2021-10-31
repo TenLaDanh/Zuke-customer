@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,6 +54,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
     ProductAdapter productAdapterRating;
     BannerAdapter bannerAdapter;
     SliderView imgHomeSlider;
+    SearchView searchView;
     private CustomBottomNavigationView customBottomNavigationView;
     Intent intent;
 
@@ -70,7 +72,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
+        if (intent.getStringExtra("accountID") != null) {
             accountID = intent.getStringExtra("accountID");
         }
 
@@ -78,7 +80,22 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         buttonAction = findViewById(R.id.buttonAction);
+        searchView = findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                intent = new Intent(HomeScreenActivity.this, SearchActivity.class);
+                intent.putExtra("query", query);
+                intent.putExtra("accountID", accountID);
+                startActivity(intent);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         buttonAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

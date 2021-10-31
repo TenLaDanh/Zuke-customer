@@ -56,7 +56,9 @@ import vn.edu.tdc.zuke_customer.R;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     OnMapReadyCallback onMapReadyCallback;
+    Intent intent;
     Button btnConfirm;
+    String accountID = "";
     private GoogleMap map;
     private CameraPosition cameraPosition;
     private final LatLng defaultLocation = new LatLng(-33.8523341, 151.2106085);
@@ -80,6 +82,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        intent = getIntent();
+        if(intent.getStringExtra("accountID") != null) {
+            accountID = intent.getStringExtra("accountID");
+        }
+
         // [START_EXCLUDE silent]
         // [START maps_current_place_on_create_save_instance_state]
         // Retrieve location and camera position from saved instance state.
@@ -96,9 +103,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         btnConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MapActivity.this,PaymentActivity.class);
+                intent = new Intent(MapActivity.this, PaymentActivity.class);
                 intent.putExtra("address", address);
+                intent.putExtra("accountID", accountID);
                 startActivity(intent);
+                finish();
             }
         });
         // [START_EXCLUDE silent]
@@ -139,6 +148,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     /**
      * Sets up the options menu.
+     *
      * @param menu The options menu.
      * @return Boolean.
      */
@@ -150,6 +160,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     /**
      * Handles a click on the menu option to get a place.
+     *
      * @param item The menu item to handle.
      * @return Boolean.
      */
@@ -168,7 +179,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
      * This callback is triggered when the map is ready to be used.
      */
     // [START maps_current_place_on_map_ready]
-
     @Override
     public void onMapReady(GoogleMap map) {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -181,8 +191,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 map.clear();
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
-                markerOptions.title(getCompleteAddressString(latLng.latitude,latLng.longitude));
-                address = getCompleteAddressString(latLng.latitude,latLng.longitude);
+                markerOptions.title(getCompleteAddressString(latLng.latitude, latLng.longitude));
+                address = getCompleteAddressString(latLng.latitude, latLng.longitude);
                 map.addMarker(markerOptions);
             }
         });
@@ -225,6 +235,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
+
     // [END maps_current_place_on_map_ready]
     private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
         String strAdd = "";
@@ -249,6 +260,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         return strAdd;
     }
+
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -275,7 +287,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 LatLng latLng = new LatLng(lastKnownLocation.getLatitude(),
                                         lastKnownLocation.getLongitude());
                                 markerOptions.position(latLng);
-                                address = getCompleteAddressString(latLng.latitude,latLng.longitude);
+                                address = getCompleteAddressString(latLng.latitude, latLng.longitude);
                                 markerOptions.title(address);
                                 map.addMarker(markerOptions);
                             }
@@ -289,7 +301,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage(), e);
         }
     }
@@ -332,7 +344,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if (permissions.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
-                    Intent intent = new Intent(MapActivity.this,MapActivity.class);
+                    Intent intent = new Intent(MapActivity.this, MapActivity.class);
                     startActivity(intent);
                 }
             }
@@ -363,10 +375,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             // Get the likely places - that is, the businesses and other points of interest that
             // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final
-            Task<FindCurrentPlaceResponse> placeResult =
+            @SuppressWarnings("MissingPermission") final Task<FindCurrentPlaceResponse> placeResult =
                     placesClient.findCurrentPlace(request);
-            placeResult.addOnCompleteListener (new OnCompleteListener<FindCurrentPlaceResponse>() {
+            placeResult.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
                 @Override
                 public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -403,8 +414,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         // Show a dialog offering the user the list of likely places, and add a
                         // marker at the selected place.
                         MapActivity.this.openPlacesDialog();
-                    }
-                    else {
+                    } else {
                         Log.e("aaa", "Exception: %s", task.getException());
                     }
                 }
@@ -480,7 +490,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 lastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }

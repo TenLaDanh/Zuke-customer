@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main_drawer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:openDrawer="start">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,7 +24,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/bg_search"
             android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/imgFilter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include" />
 
@@ -40,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imgFilter"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_margin="10dp"
@@ -49,6 +48,7 @@
             app:layout_constraintTop_toBottomOf="@+id/include" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listFilter"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingBottom="50dp"
@@ -87,7 +87,7 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="end"
-        android:background="@color/primaryTextColor"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <ImageView
@@ -119,40 +119,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="5dp"
-                    android:text="Nhóm màu"
-                    android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="15dp"
-                    android:entries="@array/mau"
-                    android:paddingStart="15dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
                     android:text="Giá"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorAccent"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.slider.RangeSlider
-                    android:id="@+id/sliderRange"
+                    android:id="@+id/priceRange"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:value="20"
                     android:valueFrom="0"
                     android:valueTo="100"
+                    app:thumbColor="@color/colorAccent"
+                    app:trackColor="#95FDF2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:values="@array/initial_slider_values"
@@ -169,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Đánh giá"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorAccent"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -180,8 +160,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="15dp"
+                    android:isIndicator="false"
                     android:rating="5"
-                    android:stepSize="0.1" />
+                    android:stepSize="1" />
             </LinearLayout>
 
             <LinearLayout
@@ -194,11 +175,35 @@
                     android:layout_height="wrap_content"
                     android:padding="5dp"
                     android:text="Thương hiệu"
-                    android:textColor="@color/white"
+                    android:textColor="@color/colorAccent"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
                 <Spinner
+                    android:id="@+id/spinManu"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginTop="15dp"
+                    android:entries="@array/thuonghieu"
+                    android:paddingStart="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="Loại sản phẩm"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinCate"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:layout_marginTop="15dp"
@@ -215,6 +220,7 @@
             android:layout_margin="15dp">
 
             <Button
+                android:id="@+id/btnReset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@null"
@@ -223,6 +229,7 @@
                 android:text="Đặt lại" />
 
             <Button
+                android:id="@+id/btnApply"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:backgroundTint="@null"

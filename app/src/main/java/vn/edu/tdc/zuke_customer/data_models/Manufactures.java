@@ -37,4 +37,9 @@ public class Manufactures {
 
     public Manufactures() {
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -2,8 +2,6 @@ package vn.edu.tdc.zuke_customer.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.text.SpannableString;
-import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,17 +20,15 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
-    private Context context;
-    private ArrayList<Product> items;
+    Context context;
+    ArrayList<Product> items;
     ProductAdapter.ItemClick itemClick;
     DatabaseReference offerDetailRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
 
@@ -111,9 +106,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
     }
 
     private String formatPrice(int price) {
-        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
-                .format(price);
-        return s.substring(2, s.length()) + " ₫";
+        String stmp = String.valueOf(price);
+        int amount;
+        amount = (int)(stmp.length() / 3);
+        if (stmp.length() % 3 == 0)
+            amount--;
+        for (int i = 1; i <= amount; i++)
+        {
+            stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
+        }
+        return stmp + " ₫";
     }
 
     @Override

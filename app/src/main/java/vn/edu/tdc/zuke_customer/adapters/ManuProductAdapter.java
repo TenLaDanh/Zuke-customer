@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import vn.edu.tdc.zuke_customer.R;
-import vn.edu.tdc.zuke_customer.activitys.CategoryActivity;
 import vn.edu.tdc.zuke_customer.activitys.DetailProductActivity;
-import vn.edu.tdc.zuke_customer.activitys.HomeScreenActivity;
 import vn.edu.tdc.zuke_customer.data_models.ManuProduct;
 import vn.edu.tdc.zuke_customer.data_models.Product;
 

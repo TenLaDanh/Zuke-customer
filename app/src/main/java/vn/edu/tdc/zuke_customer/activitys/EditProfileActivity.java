@@ -40,7 +40,7 @@ import vn.edu.tdc.zuke_customer.data_models.Customer;
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
     Toolbar toolbar;
     TextView subtitleAppbar;
-    String accountID = "", userID = "";
+    String accountID = "";
     Intent intent;
     TextView title, mess;
     ImageView imgCus, btnChooseDate;
@@ -61,7 +61,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             accountID = intent.getStringExtra("accountID");
             accountRef = db.getReference("Account/" + accountID);
         }
@@ -95,13 +95,15 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     Customer customer = snapshot1.getValue(Customer.class);
-                    if(!customer.getImage().equals("")) Picasso.get().load(customer.getImage()).fit().into(imgCus);
+                    if (!customer.getImage().equals("")) {
+                        Picasso.get().load(customer.getImage()).fit().into(imgCus);
+                    } else imgCus.setImageResource(R.drawable.man);
                     edtDOB.setText(customer.getDob());
                     edtName.setText(customer.getName());
                     edtEmail.setText(customer.getEmail());
                     btnChooseDate.setVisibility(customer.getDob().equals("") ? View.VISIBLE : View.GONE);
                 }
-//
+//https://firebasestorage.googleapis.com/v0/b/cddd2-f1bcd.appspot.com/o/images%2Fprofile%2Fcdffb4c5-f659-45c6-bd69-5cfbd8788847jpg?alt=media&token=1f3177ae-0182-4293-b418-89a3871f3e59
             }
 
             @Override
@@ -183,23 +185,53 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                                 storage.child(imageName).putFile(filePath).addOnSuccessListener(taskSnapshot -> {
                                     StorageReference myStorageRef = FirebaseStorage.getInstance().getReference(imageName);
                                     myStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                                        cusRef.child("dob").setValue(edtDOB.getText() + "");
-                                        cusRef.child("name").setValue(edtName.getText() + "");
-                                        cusRef.child("email").setValue(edtEmail.getText() + "");
-                                        String filePath = uri.toString();
-                                        cusRef.child("image").setValue(filePath).addOnSuccessListener(unused -> {
-                                            alertDialog.dismiss();
-                                            showSuccesDialog("Cập nhật thông tin thành công");
-                                        }).addOnFailureListener(e -> showWarningDialog("Cập nhật thông tin thất bại!"));
+                                        cusRef.orderByChild("accountID").equalTo(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                    Customer customer = snapshot1.getValue(Customer.class);
+                                                    customer.setDob(edtDOB.getText() + "");
+                                                    customer.setName(edtName.getText() + "");
+                                                    customer.setEmail(edtEmail.getText() + "");
+                                                    String filePath = uri.toString();
+                                                    customer.setImage(filePath);
+                                                    cusRef.child(snapshot1.getKey()).setValue(customer).addOnSuccessListener(unused -> {
+                                                        alertDialog.dismiss();
+                                                        showSuccesDialog("Cập nhật thông tin thành công");
+                                                    }).addOnFailureListener(e -> showWarningDialog("Cập nhật thông tin thất bại!"));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                                     });
                                 });
                             } else {
                                 if (!edtName.getText().equals("")) {
-                                    cusRef.child("dob").setValue(edtDOB.getText() + "");
-                                    cusRef.child("name").setValue(edtName.getText() + "");
-                                    cusRef.child("email").setValue(edtEmail.getText() + "");
+                                    cusRef.orderByChild("accountID").equalTo(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                                Customer customer = snapshot1.getValue(Customer.class);
+                                                customer.setDob(edtDOB.getText() + "");
+                                                customer.setName(edtName.getText() + "");
+                                                customer.setEmail(edtEmail.getText() + "");
+                                                cusRef.child(snapshot1.getKey()).setValue(customer).addOnSuccessListener(unused -> {
+                                                    alertDialog.dismiss();
+                                                    showSuccesDialog("Cập nhật thông tin thành công");
+                                                }).addOnFailureListener(e -> showWarningDialog("Cập nhật thông tin thất bại!"));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                                     alertDialog.dismiss();
-                                    showSuccesDialog("Cập nhật thông tin thành công");
                                 } else showWarningDialog("Tên hiển thị không được để trống!");
                             }
                         }

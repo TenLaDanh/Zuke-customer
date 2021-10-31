@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.ViewCompat;
@@ -33,7 +35,7 @@ import vn.edu.tdc.zuke_customer.data_models.Order;
 import vn.edu.tdc.zuke_customer.data_models.OrderDetail;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
-public class HistoryOrderActivity extends AppCompatActivity {
+public class HistoryOrderActivity extends AppCompatActivity implements PopupMenu.OnMenuItemClickListener {
     Toolbar toolbar;
     TextView subtitleAppbar;
     ImageView buttonAction;
@@ -49,6 +51,7 @@ public class HistoryOrderActivity extends AppCompatActivity {
     DatabaseReference order_detailRef = db.getReference("Order_Details");
     Intent intent;
     String check = "true";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +68,12 @@ public class HistoryOrderActivity extends AppCompatActivity {
         buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_round_filter_alt_24));
         assert getSupportActionBar() != null;   //null check
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        buttonAction.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(this, v);
+            popupMenu.setOnMenuItemClickListener(this);
+            popupMenu.inflate(R.menu.popup_status_order);
+            popupMenu.show();
+        });
 
         // Đổ dữ liệu recycleview:
         recyclerView = findViewById(R.id.list);
@@ -102,23 +111,23 @@ public class HistoryOrderActivity extends AppCompatActivity {
                     check = "true";
                     for (DataSnapshot node : snapshot.getChildren()) {
                         Rating rating = node.getValue(Rating.class);
-                        if(rating.getOrderID().equals(key) && !rating.getComment().equals("")
+                        if (rating.getOrderID().equals(key) && !rating.getComment().equals("")
                                 && rating.getRating() != 0 && !rating.getCreated_at().equals("")) {
                             check = "false";
                             break;
-                        } else if(rating.getOrderID().equals(key) && rating.getComment().equals("")
+                        } else if (rating.getOrderID().equals(key) && rating.getComment().equals("")
                                 && rating.getRating() == 0 && rating.getCreated_at().equals("")) {
                             check = "edit";
                             break;
                         }
                     }
-                    if(check.equals("true")) {
+                    if (check.equals("true")) {
                         order_detailRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 for (DataSnapshot node : snapshot.getChildren()) {
                                     OrderDetail orderDetail = node.getValue(OrderDetail.class);
-                                    if(orderDetail.getOrderID().equals(key)) {
+                                    if (orderDetail.getOrderID().equals(key)) {
                                         Rating rating1 = new Rating("", orderDetail.getProductID(), 0, key, "");
                                         ratingRef.push().setValue(rating1);
                                     }
@@ -131,11 +140,9 @@ public class HistoryOrderActivity extends AppCompatActivity {
                             }
                         });
                         intent.putExtra("to", "write");
-                    }
-                    else if(check.equals("edit")) {
+                    } else if (check.equals("edit")) {
                         intent.putExtra("to", "edit");
-                    }
-                    else intent.putExtra("to", "read");
+                    } else intent.putExtra("to", "read");
                 }
 
                 @Override
@@ -162,7 +169,7 @@ public class HistoryOrderActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Order order = snapshot.getValue(Order.class);
                     order.setOrderID(snapshot.getKey());
-                    if(accountID.equals(order.getAccountID())) {
+                    if (accountID.equals(order.getAccountID())) {
                         list.add(order);
                     }
                 }
@@ -174,5 +181,128 @@ public class HistoryOrderActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.mChoXuLy:
+                orderRef.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Order order = snapshot.getValue(Order.class);
+                            order.setOrderID(snapshot.getKey());
+                            if (accountID.equals(order.getAccountID()) && order.getStatus() == 1) {
+                                list.add(order);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
+            case R.id.mDangXuLy:
+                orderRef.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Order order = snapshot.getValue(Order.class);
+                            order.setOrderID(snapshot.getKey());
+                            if (accountID.equals(order.getAccountID()) &&
+                                    (order.getStatus() == 2 || order.getStatus() == 3 || order.getStatus() == 4)) {
+                                list.add(order);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
+            case R.id.mDangGiao:
+                orderRef.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Order order = snapshot.getValue(Order.class);
+                            order.setOrderID(snapshot.getKey());
+                            if (accountID.equals(order.getAccountID()) && order.getStatus() == 5) {
+                                list.add(order);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
+            case R.id.mDaNhanHang:
+                orderRef.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Order order = snapshot.getValue(Order.class);
+                            order.setOrderID(snapshot.getKey());
+                            if (accountID.equals(order.getAccountID()) && (order.getStatus() == 6 || order.getStatus() == 8)) {
+                                list.add(order);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
+            case R.id.mHuy:
+                orderRef.addValueEventListener(new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        list.clear();
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Order order = snapshot.getValue(Order.class);
+                            order.setOrderID(snapshot.getKey());
+                            if (accountID.equals(order.getAccountID()) && order.getStatus() == 0){
+                                list.add(order);
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+                break;
+            default:
+                data();
+                break;
+        }
+        return true;
     }
 }

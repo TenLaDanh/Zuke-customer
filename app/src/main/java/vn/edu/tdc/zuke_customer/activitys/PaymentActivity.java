@@ -53,7 +53,6 @@ public class PaymentActivity extends AppCompatActivity {
     ArrayList<CartDetail> listCart;
     CartDetailTTAdapter cartAdapter;
     int total = 0;
-    String accountID = "";
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
     DatabaseReference detailRef = db.getReference("Cart_Detail");
@@ -61,7 +60,7 @@ public class PaymentActivity extends AppCompatActivity {
     DatabaseReference customerRef = db.getReference("Customer");
     DatabaseReference discountcodeRef = db.getReference("DiscountCode");
     DatabaseReference areaRef = db.getReference("Area");
-    String address = "";
+    String address = "", accountID = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,10 +95,10 @@ public class PaymentActivity extends AppCompatActivity {
         listCart = new ArrayList<>();
         cartAdapter = new CartDetailTTAdapter(this, listCart);
 
-//        if (getIntent().getStringExtra("address") != null) {
-//            address = getIntent().getStringExtra("address");
-//            edtAddress.setText(address);
-//        }
+        if (getIntent().getStringExtra("address") != null) {
+            address = getIntent().getStringExtra("address");
+            edtAddress.setText(address);
+        }
 
         // Gọi hàm lấy dữ liệu:
         data();
@@ -428,9 +427,16 @@ public class PaymentActivity extends AppCompatActivity {
 
     // Format tiền
     private String formatPrice(int price) {
-        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
-                .format(price);
-        return s.substring(2, s.length()) + " ₫";
+        String stmp = String.valueOf(price);
+        int amount;
+        amount = (int)(stmp.length() / 3);
+        if (stmp.length() % 3 == 0)
+            amount--;
+        for (int i = 1; i <= amount; i++)
+        {
+            stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
+        }
+        return stmp + " ₫";
     }
 
     // Chuyển tiền sang dạng int

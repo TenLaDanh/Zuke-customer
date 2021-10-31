@@ -35,6 +35,7 @@ import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.OrderAdapter;
 import vn.edu.tdc.zuke_customer.adapters.OrderRatingAdapter;
 import vn.edu.tdc.zuke_customer.data_models.Order;
+import vn.edu.tdc.zuke_customer.data_models.Product;
 import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class RatingActivity extends AppCompatActivity {
@@ -45,6 +46,7 @@ public class RatingActivity extends AppCompatActivity {
     ArrayList<Rating> list;
     OrderRatingAdapter adapter;
     DatabaseReference ratingRef = FirebaseDatabase.getInstance().getReference("Rating");
+    DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
     Intent intent;
     Button btnSave;
     TextView title, mess;
@@ -138,7 +140,27 @@ public class RatingActivity extends AppCompatActivity {
                     ratingRef.child(rating.getKey()).child("comment").setValue(rating.getComment());
                     ratingRef.child(rating.getKey()).child("created_at").setValue(sdf.format(date));
                     ratingRef.child(rating.getKey()).child("rating").setValue(rating.getRating());
+                    ratingRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            int iDem = 0, iSum = 0;
+                            for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                                Rating rating1 = snapshot1.getValue(Rating.class);
+                                if(rating1.getProductID().equals(rating.getProductID())) {
+                                    iSum += rating1.getRating();
+                                    iDem++;
+                                }
+                            }
+                            productRef.child(rating.getProductID()).child("rating").setValue(Math.round(iSum / iDem));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
+
                 showSuccesDialog("Cảm ơn những đánh giá từ bạn. Chúng tôi sẽ tích cực hơn nữa để làm hài lòng những khách hàng đã yêu mến sử dụng dịch vụ của chúng tôi!");
             }
         });

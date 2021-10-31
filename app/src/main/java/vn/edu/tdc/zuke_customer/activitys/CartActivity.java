@@ -25,12 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 
 import vn.edu.tdc.zuke_customer.R;
 import vn.edu.tdc.zuke_customer.adapters.CartDetailAdapter;
@@ -38,7 +34,6 @@ import vn.edu.tdc.zuke_customer.data_models.Cart;
 import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.OfferDetail;
 import vn.edu.tdc.zuke_customer.data_models.Product;
-import vn.edu.tdc.zuke_customer.data_models.Rating;
 
 public class CartActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -65,7 +60,7 @@ public class CartActivity extends AppCompatActivity {
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             accountID = intent.getStringExtra("accountID");
         }
 
@@ -242,9 +237,15 @@ public class CartActivity extends AppCompatActivity {
     };
 
     private String formatPrice(int price) {
-        String s = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"))
-                .format(price);
-        return s.substring(2, s.length()) + " ₫";
+        String stmp = String.valueOf(price);
+        int amount;
+        amount = (int) (stmp.length() / 3);
+        if (stmp.length() % 3 == 0)
+            amount--;
+        for (int i = 1; i <= amount; i++) {
+            stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
+        }
+        return stmp + " ₫";
     }
 
     private void updateCartTotal(String cartID) {
@@ -303,7 +304,7 @@ public class CartActivity extends AppCompatActivity {
                                 for (DataSnapshot node : snapshot.getChildren()) {
                                     CartDetail detail = node.getValue(CartDetail.class);
                                     detail.setKey(node.getKey());
-                                    if(detail.getCartID().equals(cartID)) {
+                                    if (detail.getCartID().equals(cartID)) {
                                         detailRef.child(detail.getKey()).removeValue();
                                     }
                                 }

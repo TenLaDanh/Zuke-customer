@@ -262,7 +262,7 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
         });
 
         // Lọc mua nhiều nhất
-        querySortBySold = proRef.orderByChild("sold").limitToLast(4);
+        querySortBySold = proRef.orderByChild("sold");
         querySortBySold.addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -271,7 +271,9 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Product product = dataSnapshot.getValue(Product.class);
                     product.setKey(dataSnapshot.getKey());
-                    listProductSold.add(product);
+                    if(product.getStatus() == 0 && listProductSold.size() <= 6) {
+                        listProductSold.add(product);
+                    }
                 }
                 Collections.reverse(listProductSold);
                 productAdapterSold.notifyDataSetChanged();
@@ -294,7 +296,9 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Product product = dataSnapshot.getValue(Product.class);
                     product.setKey(dataSnapshot.getKey());
-                    listProductRating.add(product);
+                    if(product.getStatus() == 0 && listProductRating.size() < 6) {
+                        listProductRating.add(product);
+                    }
                 }
                 Collections.reverse(listProductRating);
                 productAdapterRating.notifyDataSetChanged();

@@ -291,7 +291,8 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
                     product.setKey(node.getKey());
-                    if (product.getCategory_id().equals(item.getCategory_id()) && !product.getKey().equals(item.getKey())) {
+                    if (product.getCategory_id().equals(item.getCategory_id()) &&
+                            !product.getKey().equals(item.getKey()) && product.getStatus() == 0) {
                         listRelate.add(product);
                     }
                 }
@@ -327,7 +328,10 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
             startActivity(intent);
         }
         else if (v == addCart) {
-            addCart();
+            if(item.getQuantity() > 0) {
+                addCart();
+            }
+            else showWarningDialog("Sản phẩm đã hết hàng, vui lòng quay lại sau!");
         }
         else if (v == button_favorite) {
             if (!button_favorite.isChecked()) {

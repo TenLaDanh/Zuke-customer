@@ -10,13 +10,11 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:orientation="vertical"
-        card_view:cardUseCompatPadding="true">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/view_background"
@@ -26,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/delete_icon"
-                android:layout_width="@dimen/ic_delete"
-                android:layout_height="@dimen/ic_delete"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
@@ -47,11 +45,8 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_height="110dp"
         android:orientation="vertical"
-        card_view:cardCornerRadius="15dp"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
@@ -65,6 +60,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginStart="5dp"
                 android:contentDescription="TODO"
                 android:src="@drawable/notification" />
 
@@ -72,6 +68,7 @@
                 android:id="@+id/img"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_marginStart="5dp"
                 android:layout_below="@id/imageView"
                 android:contentDescription="TODO" />
 
@@ -94,6 +91,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_toEndOf="@+id/img"
+                android:ellipsize="end"
+                android:lines="2"
                 android:text="Title"
                 android:textSize="@dimen/newsMoreTextSize" />
 
@@ -101,12 +100,13 @@
                 android:id="@+id/txt_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/txt_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="22dp"
+                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/img"
+                android:gravity="center|left"
                 android:text="Title"
-                android:textSize="11sp" />
+                android:textSize="13sp" />
 
         </RelativeLayout>
 

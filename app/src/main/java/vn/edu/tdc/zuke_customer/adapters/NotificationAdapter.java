@@ -52,7 +52,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         Notification item = list.get(position);
         holder.title.setText(item.getTitle());
         holder.content.setText(item.getContent());
-
         Date now = new Date();
         holder.created_at.setText(timeDiff(item.getCreated_at(), now));
         if(!item.getImage().equals("")) Picasso.get().load(item.getImage()).fit().into(holder.itemImage);
@@ -67,7 +66,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private String timeDiff(String created, Date now) {
         String time = "";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date create = sdf.parse(created, new ParsePosition(0));
         long diff = now.getTime() - create.getTime();
         int minute = (int) (diff / (1000 * 60));

@@ -64,7 +64,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
+        if (intent != null) {
             accountID = intent.getStringExtra("accountID");
         }
 
@@ -123,36 +123,38 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                     listPro.clear();
                     for (DataSnapshot node : snapshot.getChildren()) {
                         Product product = node.getValue(Product.class);
-                        if (product.getCategory_id().equals(categoryID)) {
-                            if (listPro.size() > 0) {
-                                boolean check = false;
-                                for (int i = 0; i < listPro.size(); i++) {
-                                    if (listPro.get(i).get(0).getManu_id().equals(product.getManu_id())) {
-                                        listPro.get(i).add(product);
-                                        check = true;
+                        if (product.getStatus() == 0) {
+                            if (product.getCategory_id().equals(categoryID)) {
+                                if (listPro.size() > 0) {
+                                    boolean check = false;
+                                    for (int i = 0; i < listPro.size(); i++) {
+                                        if (listPro.get(i).get(0).getManu_id().equals(product.getManu_id())) {
+                                            listPro.get(i).add(product);
+                                            check = true;
+                                        }
                                     }
-                                }
-                                if(!check) {
+                                    if (!check) {
+                                        ArrayList<Product> temp = new ArrayList<>();
+                                        temp.add(product);
+                                        listPro.add(temp);
+                                    }
+                                } else {
                                     ArrayList<Product> temp = new ArrayList<>();
                                     temp.add(product);
                                     listPro.add(temp);
                                 }
-                            } else {
-                                ArrayList<Product> temp = new ArrayList<>();
-                                temp.add(product);
-                                listPro.add(temp);
                             }
                         }
                     }
 
                     listManuProduct.clear();
-                    if(listPro != null) {
+                    if (listPro != null) {
                         for (ArrayList<Product> list : listPro) {
                             manuRef.child(list.get(0).getManu_id()).get().addOnSuccessListener(dataSnapshot -> {
                                 String manuName = dataSnapshot.getValue(Manufactures.class).getName();
                                 if (list.size() > 0) {
                                     listProduct = list;
-                                    if(listProduct.size() > 4) {
+                                    if (listProduct.size() > 4) {
                                         listProduct = new ArrayList<>(list.subList(0, 4));
                                     }
                                     listManuProduct.add(new ManuProduct(listProduct, manuName));
@@ -200,6 +202,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                 listPro.clear();
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
+                    if (product.getStatus() == 0) {
                         if (listPro.size() > 0) {
                             boolean check = false;
                             for (int i = 0; i < listPro.size(); i++) {
@@ -208,7 +211,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                                     check = true;
                                 }
                             }
-                            if(!check) {
+                            if (!check) {
                                 ArrayList<Product> temp = new ArrayList<>();
                                 temp.add(product);
                                 listPro.add(temp);
@@ -218,6 +221,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                             temp.add(product);
                             listPro.add(temp);
                         }
+                    }
                 }
 
                 listManuProduct.clear();
@@ -226,7 +230,7 @@ public class CategoryActivity extends AppCompatActivity implements NavigationBar
                         String manuName = dataSnapshot.getValue(Manufactures.class).getName();
                         if (list.size() > 0) {
                             listProduct = list;
-                            if(listProduct.size() > 4) {
+                            if (listProduct.size() > 4) {
                                 listProduct = new ArrayList<>(list.subList(0, 4));
                             }
                             listManuProduct.add(new ManuProduct(listProduct, manuName));

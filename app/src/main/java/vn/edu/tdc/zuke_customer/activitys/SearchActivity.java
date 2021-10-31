@@ -289,7 +289,6 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
     };
 
     private void filterProduct(String query, float minPrice, float maxPrice, float rating, String cate_id, String manu_id) {
-
         productRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -297,8 +296,9 @@ public class SearchActivity extends AppCompatActivity implements NavigationBarVi
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
                     product.setKey(node.getKey());
-                    list.add(product);
-
+                    if(product.getStatus() == 0) {
+                        list.add(product);
+                    }
                 }
                 if (!query.equals("")) {
                     for (int i = 0; i < list.size(); i++) {

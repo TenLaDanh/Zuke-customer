@@ -31,7 +31,7 @@ import vn.edu.tdc.zuke_customer.data_models.Product;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder> {
     Context context;
-    ArrayList<Favorite> items;
+    ArrayList<Favorite> items = new ArrayList<>();
     FavoriteAdapter.ItemClick itemClick;
     Handler handler = new Handler();
     Product product1 = null;
@@ -64,55 +64,60 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                     Product product = node.getValue(Product.class);
                     product.setKey(node.getKey());
                     if (product.getKey().equals(favorite.getProductId())) {
-                        product1 = product;
-                        //Tên
-                        holder.itemTitle.setText(product.getName());
-                        //Giá
-                        offerDetailRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int maxSale = 0;
-                                for (DataSnapshot node1 : snapshot.getChildren()) {
-                                    OfferDetail detail = node1.getValue(OfferDetail.class);
-                                    if (detail.getProductID().equals(favorite.getProductId())) {
-                                        if (detail.getPercentSale() > maxSale) {
-                                            maxSale = detail.getPercentSale();
+                        if(product.getStatus() == -1) {
+                            items.remove(favorite);
+                            notifyDataSetChanged();
+                        } else {
+                            product1 = product;
+                            //Tên
+                            holder.itemTitle.setText(product.getName());
+                            //Giá
+                            offerDetailRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int maxSale = 0;
+                                    for (DataSnapshot node1 : snapshot.getChildren()) {
+                                        OfferDetail detail = node1.getValue(OfferDetail.class);
+                                        if (detail.getProductID().equals(favorite.getProductId())) {
+                                            if (detail.getPercentSale() > maxSale) {
+                                                maxSale = detail.getPercentSale();
+                                            }
                                         }
                                     }
-                                }
-                                if (maxSale != 0) {
-                                    holder.itemPriceMain.setVisibility(View.VISIBLE);
-                                    int discount = product.getPrice() / 100 * (100 - maxSale);
-                                    holder.itemPrice.setText(formatPrice(discount));
-                                    holder.itemPriceMain.setText(formatPrice(product.getPrice()));
-                                    holder.itemPriceMain.setPaintFlags(holder.itemPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                                } else {
-                                    holder.itemPrice.setText(formatPrice(product.getPrice()));
-                                    holder.itemPriceMain.setVisibility(View.INVISIBLE);
+                                    if (maxSale != 0) {
+                                        holder.itemPriceMain.setVisibility(View.VISIBLE);
+                                        int discount = product.getPrice() / 100 * (100 - maxSale);
+                                        holder.itemPrice.setText(formatPrice(discount));
+                                        holder.itemPriceMain.setText(formatPrice(product.getPrice()));
+                                        holder.itemPriceMain.setPaintFlags(holder.itemPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                    } else {
+                                        holder.itemPrice.setText(formatPrice(product.getPrice()));
+                                        holder.itemPriceMain.setVisibility(View.INVISIBLE);
+                                    }
+
                                 }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                            //Ảnh
+                            StorageReference imageRef =  FirebaseStorage.getInstance().getReference("images/products/" + product.getName() + "/" + product.getImage());
+                            imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri).resize(holder.itemImage.getWidth(), holder.itemImage.getHeight()).into(holder.itemImage));
+                            //Rating:
+                            if(product.getRating() > 0) {
+                                holder.itemRating.setText(product.getRating() + "");
+                            } else {
+                                holder.itemRating.setVisibility(View.GONE);
                             }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
+                            //Đã bán:
+                            if (product.getSold() > 0) {
+                                holder.itemRatingAmount.setText(product.getSold() + " đã bán");
+                            } else {
+                                holder.itemRatingAmount.setVisibility(View.INVISIBLE);
                             }
-                        });
-                        //Ảnh
-                        StorageReference imageRef =  FirebaseStorage.getInstance().getReference("images/products/" + product.getName() + "/" + product.getImage());
-                        imageRef.getDownloadUrl().addOnSuccessListener(uri -> Picasso.get().load(uri).resize(holder.itemImage.getWidth(), holder.itemImage.getHeight()).into(holder.itemImage));
-                        //Rating:
-                        if(product.getRating() > 0) {
-                            holder.itemRating.setText(product.getRating() + "");
-                        } else {
-                            holder.itemRating.setVisibility(View.GONE);
-                        }
-
-                        //Đã bán:
-                        if (product.getSold() > 0) {
-                            holder.itemRatingAmount.setText(product.getSold() + " đã bán");
-                        } else {
-                            holder.itemRatingAmount.setVisibility(View.INVISIBLE);
                         }
                     }
                 }

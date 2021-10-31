@@ -70,48 +70,53 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
-                    if (node.getKey().equals(item.getProductID())) {
-                        //set name
-                        holder.itemName.setText(product.getName());
-                        //set gia san pham
-                        holder.itemPrice.setText(formatPrice(product.getPrice()));
-                        promoRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                int maxSale = 0;
-                                for(DataSnapshot node1 : snapshot.getChildren()){
-                                    OfferDetail detail = node1.getValue(OfferDetail.class);
-                                    if(detail.getProductID().equals(item.getProductID())){
-                                        if(detail.getPercentSale() > maxSale){
-                                            maxSale = detail.getPercentSale();
+                    if(product.getStatus() == -1) {
+                        list.remove(item);
+                        notifyDataSetChanged();
+                    } else {
+                        if (node.getKey().equals(item.getProductID())) {
+                            //set name
+                            holder.itemName.setText(product.getName());
+                            //set gia san pham
+                            holder.itemPrice.setText(formatPrice(product.getPrice()));
+                            promoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    int maxSale = 0;
+                                    for(DataSnapshot node1 : snapshot.getChildren()){
+                                        OfferDetail detail = node1.getValue(OfferDetail.class);
+                                        if(detail.getProductID().equals(item.getProductID())){
+                                            if(detail.getPercentSale() > maxSale){
+                                                maxSale = detail.getPercentSale();
+                                            }
                                         }
                                     }
+                                    if(maxSale != 0){
+                                        int discount = product.getPrice() /100 * (100-maxSale);
+                                        holder.itemPriceDiscount.setText(formatPrice(discount));
+                                        holder.itemPrice.setPaintFlags(holder.itemPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                                    } else {
+                                        holder.itemPriceDiscount.setText(formatPrice(product.getPrice()));
+                                        holder.itemPrice.setVisibility(View.INVISIBLE);
+                                    }
+
                                 }
-                                if(maxSale != 0){
-                                    int discount = product.getPrice() /100 * (100-maxSale);
-                                    holder.itemPriceDiscount.setText(formatPrice(discount));
-                                    holder.itemPrice.setPaintFlags(holder.itemPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                                } else {
-                                    holder.itemPriceDiscount.setText(formatPrice(product.getPrice()));
-                                    holder.itemPrice.setVisibility(View.INVISIBLE);
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
                                 }
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                        holder.edtValue.setText(""+item.getAmount());
-                        //set hinh anh
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-                        final long ONE_MEGABYTE = 1024 * 1024;
-                        StorageReference imageRef = storage.getReference("images/products/" + product.getName() + "/" + product.getImage());
-                        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
-                            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                            holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
-                        });
+                            });
+                            holder.edtValue.setText(""+item.getAmount());
+                            //set hinh anh
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            final long ONE_MEGABYTE = 1024 * 1024;
+                            StorageReference imageRef = storage.getReference("images/products/" + product.getName() + "/" + product.getImage());
+                            imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
+                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
+                            });
+                        }
                     }
                 }
             }

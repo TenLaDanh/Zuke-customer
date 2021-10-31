@@ -52,28 +52,32 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
         proRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
-                    if (node.getKey().equals(item.getProductID())) {
-                        //set name
-                        holder.itemName.setText(product.getName());
-                        //set gia san pham
-                        holder.itemPrice.setText(formatPrice(item.getPrice()));
+                    if(product.getStatus() == -1) {
+                        list.remove(item);
+                        notifyDataSetChanged();
+                    } else {
+                        if (node.getKey().equals(item.getProductID())) {
+                            //set name
+                            holder.itemName.setText(product.getName());
+                            //set gia san pham
+                            holder.itemPrice.setText(formatPrice(item.getPrice()));
 
-                        holder.itemAmount.setText("Số lương : "+item.getAmount());
-                        holder.itemTotal.setText(formatPrice(item.getPrice()*item.getAmount()));
-                        //set hinh anh
-                        FirebaseStorage storage = FirebaseStorage.getInstance();
-                        final long ONE_MEGABYTE = 1024 * 1024;
-                        StorageReference imageRef = storage.getReference("images/products/" + product.getName() + "/" + product.getImage());
-                        imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                            @Override
-                            public void onSuccess(byte[] bytes) {
-                                Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
-                            }
-                        });
+                            holder.itemAmount.setText("Số lương : "+item.getAmount());
+                            holder.itemTotal.setText(formatPrice(item.getPrice()*item.getAmount()));
+                            //set hinh anh
+                            FirebaseStorage storage = FirebaseStorage.getInstance();
+                            final long ONE_MEGABYTE = 1024 * 1024;
+                            StorageReference imageRef = storage.getReference("images/products/" + product.getName() + "/" + product.getImage());
+                            imageRef.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                                @Override
+                                public void onSuccess(byte[] bytes) {
+                                    Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                    holder.itemImage.setImageBitmap(Bitmap.createScaledBitmap(bmp, holder.itemImage.getWidth(), holder.itemImage.getHeight(), false));
+                                }
+                            });
+                        }
                     }
                 }
             }

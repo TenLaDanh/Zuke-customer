@@ -53,7 +53,6 @@ public class PaymentActivity extends AppCompatActivity {
     ArrayList<CartDetail> listCart;
     CartDetailTTAdapter cartAdapter;
     int total = 0;
-    String accountID = "";
     FirebaseDatabase db = FirebaseDatabase.getInstance();
     DatabaseReference cartRef = db.getReference("Cart");
     DatabaseReference detailRef = db.getReference("Cart_Detail");
@@ -61,7 +60,7 @@ public class PaymentActivity extends AppCompatActivity {
     DatabaseReference customerRef = db.getReference("Customer");
     DatabaseReference discountcodeRef = db.getReference("DiscountCode");
     DatabaseReference areaRef = db.getReference("Area");
-    String address = "";
+    String address = "", accountID = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,10 +95,10 @@ public class PaymentActivity extends AppCompatActivity {
         listCart = new ArrayList<>();
         cartAdapter = new CartDetailTTAdapter(this, listCart);
 
-//        if (getIntent().getStringExtra("address") != null) {
-//            address = getIntent().getStringExtra("address");
-//            edtAddress.setText(address);
-//        }
+        if (getIntent().getStringExtra("address") != null) {
+            address = getIntent().getStringExtra("address");
+            edtAddress.setText(address);
+        }
 
         // Gọi hàm lấy dữ liệu:
         data();

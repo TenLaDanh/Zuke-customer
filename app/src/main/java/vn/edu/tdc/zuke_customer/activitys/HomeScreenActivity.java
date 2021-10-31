@@ -70,8 +70,8 @@ public class HomeScreenActivity extends AppCompatActivity implements NavigationB
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if(intent != null) {
-            accountID = intent.getStringExtra("accountID");
+        if(intent.getStringExtra("accountID") != null) {
+            //accountID = intent.getStringExtra("accountID");
         }
 
         // Toolbar:

@@ -36,6 +36,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     Handler handler = new Handler();
     Product product1 = null;
     DatabaseReference productRef = FirebaseDatabase.getInstance().getReference("Products");
+    DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorite");
     DatabaseReference offerDetailRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
 
     public FavoriteAdapter(Context context, ArrayList<Favorite> items) {
@@ -56,6 +57,11 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull FavoriteAdapter.ViewHolder holder, int position) {
         Favorite favorite = items.get(position);
+        holder.itemTitle.setText("");
+        holder.itemPrice.setText("");
+        holder.itemPriceMain.setText("");
+        holder.itemRating.setText("");
+        holder.itemRatingAmount.setText("");
         // Thông tin sản phẩm:
         productRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -65,7 +71,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                     product.setKey(node.getKey());
                     if (product.getKey().equals(favorite.getProductId())) {
                         if(product.getStatus() == -1) {
-                            items.remove(favorite);
+                            favRef.child(favorite.getKey()).removeValue();
                             notifyDataSetChanged();
                         } else {
                             product1 = product;

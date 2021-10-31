@@ -204,7 +204,6 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot node : snapshot.getChildren()) {
-                        Log.d("TAG", "onDataChange: "+node.child("userId").getValue(String.class));
                         if (node.child("userId").getValue(String.class).equals(accountID)
                                 && node.child("productId").getValue(String.class).equals(item.getKey())) {
                             button_favorite.setChecked(true);
@@ -226,6 +225,7 @@ public class DetailProductActivity extends AppCompatActivity implements View.OnC
         public void getDetailProduct(Product item) {
             intent = new Intent(DetailProductActivity.this, DetailProductActivity.class);
             intent.putExtra("item", item);
+            intent.putExtra("accountID", accountID);
             startActivity(intent);
             finish();
         }

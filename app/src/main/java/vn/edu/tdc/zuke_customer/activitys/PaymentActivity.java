@@ -375,7 +375,7 @@ public class PaymentActivity extends AppCompatActivity {
                                 total = 0;
                                 for (DataSnapshot node1 : snapshot1.getChildren()) {
                                     CartDetail detail = node1.getValue(CartDetail.class);
-                                    if (detail.getCartID().equals(node.getKey())) {
+                                    if (detail.getCartID().equals(node.getKey()) && detail.getAmount() > 0) {
                                         listCart.add(detail);
                                         total += detail.getPrice() * detail.getAmount();
                                     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -60,9 +61,7 @@ public class CartActivity extends AppCompatActivity {
 
         // Nhận dữ liệu từ intent:
         intent = getIntent();
-        if (intent != null) {
-            accountID = intent.getStringExtra("accountID");
-        }
+        accountID = intent.getStringExtra("accountID");
 
         // Toolbar:
         toolbar = findViewById(R.id.toolbar);
@@ -73,6 +72,7 @@ public class CartActivity extends AppCompatActivity {
         buttonAction.setBackground(getResources().getDrawable(R.drawable.ic_baseline_delete_24));
         assert getSupportActionBar() != null;   //null check
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         buttonAction.setOnClickListener(v -> {
             showErrorDialog("Bạn có muốn làm sạch giỏ hàng?");
         });

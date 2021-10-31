@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -42,6 +44,8 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     ItemClickListener itemClickListener;
     DatabaseReference proRef = FirebaseDatabase.getInstance().getReference("Products");
     DatabaseReference promoRef = FirebaseDatabase.getInstance().getReference("Offer_Details");
+    DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference("Cart");
+    DatabaseReference cartDetailRef = FirebaseDatabase.getInstance().getReference("Cart_Detail");
     ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -65,16 +69,30 @@ public class CartDetailAdapter extends RecyclerView.Adapter<CartDetailAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartDetail item = list.get(position);
+        holder.itemName.setText("");
+        holder.itemPrice.setText("");
+        holder.itemPriceDiscount.setText("");
+        holder.edtValue.setText("");
         proRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
-                    if(product.getStatus() == -1) {
-                        list.remove(item);
-                        notifyDataSetChanged();
-                    } else {
-                        if (node.getKey().equals(item.getProductID())) {
+                    if (node.getKey().equals(item.getProductID())) {
+                        if(product.getStatus() == -1) {
+                            cartDetailRef.child(item.getKey()).removeValue();
+                            cartRef.child(item.getCartID()).child("total").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    cartRef.child(item.getCartID()).child("total").setValue(snapshot.getValue(Integer.class) - item.getPrice() * item.getAmount());
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        } else {
                             //set name
                             holder.itemName.setText(product.getName());
                             //set gia san pham

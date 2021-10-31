@@ -31,6 +31,8 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
     private Context context;
     private ArrayList<CartDetail> list;
     DatabaseReference proRef = FirebaseDatabase.getInstance().getReference("Products");
+    DatabaseReference cartRef = FirebaseDatabase.getInstance().getReference("Cart");
+    DatabaseReference cartDetailRef = FirebaseDatabase.getInstance().getReference("Cart_Detail");
 
     public CartDetailTTAdapter(Context context, ArrayList<CartDetail> list) {
         this.context = context;
@@ -49,23 +51,37 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CartDetail item = list.get(position);
+        holder.itemName.setText("");
+        holder.itemPrice.setText("");
+        holder.itemTotal.setText("");
+        holder.itemAmount.setText("");
         proRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot node : snapshot.getChildren()) {
                     Product product = node.getValue(Product.class);
-                    if(product.getStatus() == -1) {
-                        list.remove(item);
-                        notifyDataSetChanged();
-                    } else {
-                        if (node.getKey().equals(item.getProductID())) {
+                    if (node.getKey().equals(item.getProductID())) {
+                        if (product.getStatus() == -1) {
+                            cartDetailRef.child(item.getKey()).removeValue();
+                            cartRef.child(item.getCartID()).child("total").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    cartRef.child(item.getCartID()).child("total").setValue(snapshot.getValue(Integer.class) - item.getPrice() * item.getAmount());
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        } else {
                             //set name
                             holder.itemName.setText(product.getName());
                             //set gia san pham
                             holder.itemPrice.setText(formatPrice(item.getPrice()));
 
-                            holder.itemAmount.setText("Số lương : "+item.getAmount());
-                            holder.itemTotal.setText(formatPrice(item.getPrice()*item.getAmount()));
+                            holder.itemAmount.setText("Số lương : " + item.getAmount());
+                            holder.itemTotal.setText(formatPrice(item.getPrice() * item.getAmount()));
                             //set hinh anh
                             FirebaseStorage storage = FirebaseStorage.getInstance();
                             final long ONE_MEGABYTE = 1024 * 1024;
@@ -94,10 +110,10 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView itemImage;
-        private TextView itemName, itemPrice, itemTotal,itemAmount;
+        private TextView itemName, itemPrice, itemTotal, itemAmount;
         View.OnClickListener onClickListener;
 
         public ViewHolder(View view) {
@@ -111,7 +127,7 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
 
         @Override
         public void onClick(View v) {
-            if(onClickListener != null) {
+            if (onClickListener != null) {
                 onClickListener.onClick(v);
             }
         }
@@ -120,11 +136,10 @@ public class CartDetailTTAdapter extends RecyclerView.Adapter<CartDetailTTAdapte
     private String formatPrice(int price) {
         String stmp = String.valueOf(price);
         int amount;
-        amount = (int)(stmp.length() / 3);
+        amount = (int) (stmp.length() / 3);
         if (stmp.length() % 3 == 0)
             amount--;
-        for (int i = 1; i <= amount; i++)
-        {
+        for (int i = 1; i <= amount; i++) {
             stmp = new StringBuilder(stmp).insert(stmp.length() - (i * 3) - (i - 1), ",").toString();
         }
         return stmp + " ₫";

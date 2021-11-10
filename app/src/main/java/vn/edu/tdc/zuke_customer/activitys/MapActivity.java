@@ -106,6 +106,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 intent = new Intent(MapActivity.this, PaymentActivity.class);
                 intent.putExtra("address", address);
                 intent.putExtra("accountID", accountID);
+                if(getIntent().getBundleExtra("bundle") != null){
+                    intent.putExtra("bundle",getIntent().getBundleExtra("bundle"));
+                }
                 startActivity(intent);
                 finish();
             }

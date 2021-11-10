@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -66,7 +67,6 @@ public class PaymentActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_payment);
-
         // Nhận dữ liệu từ intent:
         intent = getIntent();
         accountID = intent.getStringExtra("accountID");
@@ -99,7 +99,16 @@ public class PaymentActivity extends AppCompatActivity {
             address = getIntent().getStringExtra("address");
             edtAddress.setText(address);
         }
+        if(intent.getBundleExtra("bundle") != null){
+            Bundle bundle = intent.getBundleExtra("bundle");
+            edtName.setText(bundle.getString("edtName"));
+            edtPhone.setText(bundle.getString("edtPhone"));
+            edtDiscountCode.setText(bundle.getString("edtDiscountCode"));
+            edtNote.setText(bundle.getString("edtNote"));
+            txtTotal.setText(bundle.getString("txtTotal"));
+            txtDiscount.setText(bundle.getString("txtDiscount"));
 
+        }
         // Gọi hàm lấy dữ liệu:
         data();
 
@@ -242,8 +251,18 @@ public class PaymentActivity extends AppCompatActivity {
 
         // Xử lý sự kiện click mở map cho btnMap:
         btnMap.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("edtName",edtName.getText()+"");
+            bundle.putString("edtphone",edtPhone.getText()+"");
+            bundle.putString("edtDiscountCode",edtDiscountCode.getText()+"");
+            bundle.putString("edtNote",edtNote.getText()+"");
+            bundle.putString("txtTotal",txtTotal.getText()+"");
+            bundle.putString("txtDiscount",txtDiscount.getText()+"");
             Intent intent = new Intent(PaymentActivity.this, MapActivity.class);
+            intent.putExtra("accountID",accountID);
+            intent.putExtra("bundle",bundle);
             startActivity(intent);
+            finish();
         });
 
         // Xử lý sự kiện xác nhận đặt hàng:
@@ -500,5 +519,25 @@ public class PaymentActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d("aaa", "onSaveInstanceState: ");
+        outState.putString("abc","abc");
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("aaa", "onRestart: ");
     }
 }

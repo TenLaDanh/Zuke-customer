@@ -82,7 +82,8 @@
         </activity>
         <activity
             android:name=".activitys.PaymentActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+          >
         </activity>
 
         <activity

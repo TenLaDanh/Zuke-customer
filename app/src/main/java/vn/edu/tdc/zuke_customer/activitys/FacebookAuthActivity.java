@@ -1,8 +1,13 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -43,6 +50,7 @@ public class FacebookAuthActivity extends LoginActivity {
     CallbackManager callbackManager;
     FirebaseAuth mAuth;
     boolean check = true;
+    String phoneNumber = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +98,10 @@ public class FacebookAuthActivity extends LoginActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Log.d("TAG", "onComplete:  " + user.getUid());
-                            Log.d("TAG", "onComplete:  " + user.getPhoneNumber());
-                            Log.d("TAG", "onComplete:  " + user.getDisplayName());
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                ActivityCompat.requestPermissions(FacebookAuthActivity.this,new String[]{Manifest.permission.READ_PHONE_NUMBERS}, 1412);
+                            }
+                            Log.d("bbb", "onComplete: "+phoneNumber);
                             DatabaseReference accountRef = FirebaseDatabase.getInstance().getReference("Account");
                             accountRef.addValueEventListener(new ValueEventListener() {
                                 @Override
@@ -187,5 +196,23 @@ public class FacebookAuthActivity extends LoginActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == 1412) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                TelephonyManager manager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+                if (ActivityCompat.checkSelfPermission(FacebookAuthActivity.this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(FacebookAuthActivity.this, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(FacebookAuthActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+                    return;
+                }
+                phoneNumber = manager.getLine1Number();
+                Log.d("TAG", "onRequestPermissionsResult: "+manager.getLine1Number());
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

@@ -1,10 +1,14 @@
 package vn.edu.tdc.zuke_customer.activitys;
 
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -12,8 +16,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +46,13 @@ public class LoginActivity extends AppCompatActivity {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.layout_login);
+        UIinit();
+
+
+    }
+
+    private void UIinit() {
+
         fbButton = findViewById(R.id.btnFB);
         edtPhone = findViewById(R.id.editTextPhone);
         edtPass = findViewById(R.id.editTextPassword);
@@ -140,5 +153,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         alertDialog.show();
     }
+
 
 }

@@ -38,6 +38,7 @@ import vn.edu.tdc.zuke_customer.data_models.Area;
 import vn.edu.tdc.zuke_customer.data_models.Cart;
 import vn.edu.tdc.zuke_customer.data_models.CartDetail;
 import vn.edu.tdc.zuke_customer.data_models.Customer;
+import vn.edu.tdc.zuke_customer.data_models.CustomerType;
 import vn.edu.tdc.zuke_customer.data_models.DiscountCode;
 import vn.edu.tdc.zuke_customer.data_models.DiscountCode_Customer;
 import vn.edu.tdc.zuke_customer.data_models.Order;
@@ -151,12 +152,16 @@ public class PaymentActivity extends AppCompatActivity {
                                                                     int totalPrice = toPrice(String.valueOf(txtTotal.getText()));
                                                                     int discount = totalPrice / 100 * value;
                                                                     int transportFee = toPrice(String.valueOf(txtTransportFee.getText()));
+                                                                    int oldDiscount = toPrice(txtDiscount.getText()+"");
+                                                                    discount+= oldDiscount;
                                                                     txtDiscount.setText(formatPrice(discount));
                                                                     txtRemain.setText(formatPrice(totalPrice + transportFee - discount));
                                                                 } else if (code.getType().equals("VND")) {
                                                                     int value = code.getValue();
                                                                     int totalPrice = toPrice(String.valueOf(txtTotal.getText()));
                                                                     int discount = value;
+                                                                    int oldDiscount = toPrice(txtDiscount.getText()+"");
+                                                                    discount+= oldDiscount;
                                                                     int transportFee = toPrice(String.valueOf(txtTransportFee.getText()));
                                                                     txtDiscount.setText(formatPrice(discount));
                                                                     txtRemain.setText(formatPrice(totalPrice + transportFee - discount));
@@ -165,6 +170,8 @@ public class PaymentActivity extends AppCompatActivity {
                                                                     txtDiscount.setText(formatPrice(transportFee));
                                                                     int totalPrice = toPrice(String.valueOf(txtTotal.getText()));
                                                                     int discount = toPrice(String.valueOf(txtDiscount.getText()));
+                                                                    int oldDiscount = toPrice(txtDiscount.getText()+"");
+                                                                    discount+= oldDiscount;
                                                                     txtRemain.setText(formatPrice(totalPrice + transportFee - discount));
 
                                                                 }
@@ -172,10 +179,12 @@ public class PaymentActivity extends AppCompatActivity {
                                                             }
                                                         }
                                                         if (!check) {
-                                                            txtDiscount.setText(formatPrice(0));
+                                                            int oldDiscount = toPrice(txtDiscount.getText()+"");
+
+                                                            txtDiscount.setText(formatPrice(oldDiscount));
                                                             int total = toPrice(String.valueOf(txtTotal.getText()));
                                                             int transportFee = toPrice(String.valueOf(txtTransportFee.getText()));
-                                                            txtRemain.setText(formatPrice(total + transportFee));
+                                                            txtRemain.setText(formatPrice(total + transportFee - oldDiscount));
                                                         }
                                                     }
 
@@ -376,8 +385,9 @@ public class PaymentActivity extends AppCompatActivity {
 
     // Get data:
     private void data() {
-        txtTotal.setText(formatPrice(0));
         txtDiscount.setText(formatPrice(0));
+
+        txtTotal.setText(formatPrice(0));
         txtTransportFee.setText(formatPrice(0));
         txtRemain.setText(formatPrice(0));
         cartRef.addValueEventListener(new ValueEventListener() {
@@ -420,9 +430,44 @@ public class PaymentActivity extends AppCompatActivity {
 
             }
         });
-        txtDiscount.setText(formatPrice(0));
-        txtTransportFee.setText(formatPrice(0));
-        txtRemain.setText(formatPrice(total));
+        customerRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot node : snapshot.getChildren()){
+                    Customer customer = node.getValue(Customer.class);
+                    if(customer.getAccountID().equals(accountID)){
+                        DatabaseReference typeRef = db.getReference("CustomerType");
+                        typeRef.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot1) {
+                                for(DataSnapshot node1 : snapshot1.getChildren()){
+                                    CustomerType type = node1.getValue(CustomerType.class);
+                                    if(node1.getKey().equals(customer.getType_id())){
+
+                                        int total = toPrice(txtTotal.getText()+"");
+                                        int transportFee = toPrice(txtTransportFee.getText()+"");
+                                        int discount = total / 100 *type.getDiscount();
+                                        txtDiscount.setText(formatPrice(discount));
+                                        txtRemain.setText(formatPrice(total+transportFee-discount));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     // Kiểm tra lỗi
@@ -460,7 +505,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     // Chuyển tiền sang dạng int
     private int toPrice(String price) {
-        price = price.substring(0, price.length() - 2).replace(".", "");
+        price = price.substring(0, price.length() - 2).replace(",", "");
 
         int totalPrice = Integer.parseInt(price);
         return totalPrice;
@@ -519,25 +564,5 @@ public class PaymentActivity extends AppCompatActivity {
             alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
         }
         alertDialog.show();
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        Log.d("aaa", "onSaveInstanceState: ");
-        outState.putString("abc","abc");
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("aaa", "onRestart: ");
     }
 }
